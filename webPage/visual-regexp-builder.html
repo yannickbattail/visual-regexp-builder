@@ -1,0 +1,40 @@
+<html>
+<head>
+<link rel="stylesheet" href="apg.css" type="text/css" />
+<!--
+///////////////////////////////////////////////////////////////////////////////
+// 1. include APG library
+///////////////////////////////////////////////////////////////////////////////
+-->
+<script type="text/javascript" src="apgLib.js"></script>
+<script type="text/javascript" src="apgUtilities.js"></script>
+<script type="text/javascript" src="apgTrace.js"></script>
+<script type="text/javascript" src="apgStats.js"></script>
+<script type="text/javascript" src="apgAst.js"></script>
+<!--
+///////////////////////////////////////////////////////////////////////////////
+// 2. include generated parser
+///////////////////////////////////////////////////////////////////////////////
+-->
+<script type="text/javascript" src="regexpParser.js"></script>
+
+<script type="text/javascript" src="visual-regexp-builder.js"></script>
+<!--  -->
+<!-- A GENERIC HTML PAGE -->
+<!--  -->
+</head>
+<body>
+	<h1>Testing an APG-Generated Parser</h1>
+	<h3>The grammar:</h3>
+	<h3>The Input String:</h3>
+	<p>
+		<textarea id="input-string">/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/</textarea>
+		<br /> <input type="button" id="parser" value="Parse"
+			onclick="main()" />
+	</p>
+	<h3>The Parser's Output:</h3>
+	<div id="parser-output">
+		<!-- the "main" program will write its results here  -->
+	</div>
+</body>
+</html>

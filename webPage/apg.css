@@ -1,0 +1,653 @@
+/********************************************************************
+  APG - an ABNF Parser Generator
+  Copyright (C) 2009 Coast to Coast Research, Inc.
+ 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 2 of the License, or
+  (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see
+  <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
+  or write to the Free Software Foundation, Inc.,
+  51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+  
+	  author: Lowell Thomas
+	          lowell@coasttocoastresearch.com
+	          http://www.coasttocoastresearch.com
+
+*********************************************************************/
+/********************************************************************
+  BrightSide Additions
+********************************************************************/
+/** drop down menu; css tricks from http://htmldog.com/articles/suckerfish/dropdowns/ **/
+ul li ul.dropdown {
+	position: fixed;
+	display: none;
+	list-style: none;
+	left: -999em;
+	top: auto;
+	padding: 0px;
+	background-color:white;
+	margin: 0 0 0 -1px ;
+}
+
+ul li:hover ul.dropdown {
+	display: block;
+	top:auto;
+	left: auto;
+	width: 123px;
+	margin: 0 0 10px 50px ;
+	font-size:10px;
+}
+
+em
+{
+    font-style:italic;
+    font-weight:bold;
+}
+.center{text-align:center;}
+
+/********************************************************************
+  APG
+********************************************************************/
+.cr, .lf, .tab, .hex, .eos, .other, .highlight
+{
+    font-family:monospace;
+    font-size:10px;
+    font-weight:bold;
+}
+.cr{color:#7700bb;}
+.lf{color:#7700bb;}
+.tab{color:#cc00cc;}
+.eos{color:black;}
+.quote{color:red;}
+.other{color:#cc00cc;}
+.hex{color:#00aa00;}
+.rule{color:blue;}
+.error{color:red;}
+.lineno{color:#0000ff;}
+.linebeg{color:#00ff00;}
+.linelen{color:#ff6600;}
+
+.stats
+{
+    text-align:right;
+}
+.caption
+{
+    text-align:left;
+}
+
+/*
+#trace-main {
+	background: #FFF;
+	width: 100%; height: 100%;
+	margin: 0 auto;
+	text-align: left;
+}
+*/
+.trace
+{
+    font-family:monospace;
+    font-weight:normal;
+    font-size:14px;
+    line-height:130%;
+}
+.trace .trace-text{color:black;}
+.trace .quote{color:#7722bb;}
+.trace .trace-down{background-color:#eeffff;border-bottom:1px solid #cccccc;}
+.trace .trace-match{background-color:#aaff88;border-bottom:1px solid #cccccc;}
+.trace .trace-nomatch{background-color:#eeeeee;border-bottom:1px solid #cccccc;}
+.trace .trace-empty{background-color:#ffff99;border-bottom:1px solid #cccccc;}
+.trace .trace-nomatch .trace-text{color:#999999;}
+.trace .cr{color:#555555;}
+.trace .lf{color:#999999;}
+.trace .quote{color:#999999;}
+.trace .hex{color:#555555;}
+.trace-header
+{
+    text-align:left;
+    color:#355E8A;
+    font-size:25px;
+    font-family:arial,sans-serif;
+    font-weight:bold;
+}
+.phrase
+{
+    font-family:monospace;
+    font-size:14px;
+    font-weight:normal;
+    color:black;
+}
+.phrase .lineno
+{
+    font-family:monospace;
+    font-size:12px;
+    font-style:normal;
+    font-weight:normal;
+    color:black;
+}
+.phrase .highlight
+{
+    font-size:14px;
+    font-style:italic;
+    font-weight:normal;
+    color:blue;
+}
+.phrase .highlight .lf{color:#6699ff;}
+.phrase .highlight .cr{color:#6699ff;}
+.phrase .highlight .tab{color:#6699ff;}
+.phrase .highlight .hex{color:#6699ff;}
+.phrase .highlight .other{color:#6699ff;}
+/********************************************************************
+  PAGES
+********************************************************************/
+a
+{
+    color:#6699cc;
+}
+
+a:hover
+{
+    color:#355E8A;
+    text-decoration:none;
+}
+
+.code
+{
+  margin-left: 15px;
+  line-height:100%;
+  font-family: 'courier new', monospace;
+}
+
+.grammar
+{
+  margin-left: 15px;
+  line-height:100%;
+  font-size:10px;  
+  font-family: 'Lucida Console', 'courier new', monospace;
+}
+
+table.apg-table
+{
+    margin: 10px 15px;
+}
+
+table.apg-table tr
+{
+    vertical-align:bottom;
+}
+
+#grammar-area
+{
+    border: none;
+    width: 601px;
+    height: auto;
+}
+#grammar-indicators
+{
+    border: none;
+    width: 100%;
+    height: auto;
+}
+#grammar-select
+{
+    float:right;
+}
+.ind
+{
+    font-weight:bold;
+    color:silver;
+}
+.ind-success
+{
+    color:green;
+    font-weight:bold;
+}
+.ind-failed
+{
+    color:red;
+    font-weight:bold;
+}
+.abnf-grammar
+{
+    font-family:\'courier new\', monospace;
+    border: 1px solid #cccccc;
+    width: 595px;
+    height: 200px;
+}
+#input-area
+{
+    border: none;
+    width: 601px;
+    height: auto;
+}
+#input-indicators
+{
+    border: none;
+    width: 100%;
+    height: auto;
+}
+#input-select
+{
+    float:right;
+}
+/*
+#input-abnf
+{
+    border: 1px solid #cccccc;
+    width: 595px;
+    height: 200px;
+}
+#select-phrases
+{
+    border: 0;
+    border-left: 4px solid #CCCCCC;
+    min-height: 21px;
+}
+*/
+.button-active, .button-inactive, .button-active:hover
+{
+    width:155px;
+    color:#333333;
+    background-color:#f2f2f2;
+    border-left:4px solid #cccccc;
+    font-weight:bold;
+    text-align:left;
+}
+.button-active:hover
+{
+	color: #339900;
+	border-left:4px solid #9EC630;
+	cursor:pointer;
+}
+.button-inactive
+{
+    color:silver;
+    font-weight:normal;
+}
+.controls
+{
+    border: none;
+    width: 599px;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+.controls ul
+{
+    list-style:none;
+    width: 165px;
+    border:none;
+    margin: 0;
+    padding: 0;
+}
+.controls ul li
+{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid white;
+}
+.controls .button-active, .controls .button-active:hover, .controls .button-inactive,
+{
+    width:155px;
+}
+.controls .button-active-open, .controls .button-active-open:hover
+{
+    background-color:#f2f2f2;
+    border-left:4px solid #cccccc;
+    font-weight:bold;
+    text-align:left;
+    color:#6297BC;
+    width:155px;
+}
+.controls .button-active-parse, .controls .button-active-parse:hover
+{
+    width:155px;
+    background-color:#f2f2f2;
+    border-left:4px solid #6297BC;
+    font-weight:bold;
+    text-align:left;
+    color:#333333;
+}
+.controls .button-active-parse-open, .controls .button-active-parse-open:hover
+{
+    background-color:#f2f2f2;
+    border-left:4px solid #6297BC;
+    font-weight:bold;
+    text-align:left;
+    color:#6297BC;
+    width:155px;
+}
+.controls .button-active-parse:hover
+{
+	color: #339900;
+	border-left:4px solid #9EC630;
+}
+.controls .select-inactive, .controls .select-active, .controls .select-active-parse
+{
+    width:155px;
+    background-color:#f2f2f2;
+    border-left:4px solid #CCCCCC;
+    font-weight:bold;
+    text-align:left;
+    color:#333333;
+}
+.controls .select-active .controls .select-active:hover
+{
+    border-left:4px solid #cccccc;
+}
+.controls .select-active:hover
+{
+    border-left:4px solid #9EC630;
+}
+.controls .select-active-parse
+{
+    border-left:4px solid #6297BC;
+}
+.iframe
+{
+    border: 1px solid #cccccc;
+    width: 599px;
+    height: 200px;
+}
+/*
+#iframe-select
+{
+    float:right;
+    text-align:right;
+}
+*/
+#iframe-area
+{
+    border: none;
+    width: 601px;
+    height: auto;
+}
+.sameash4{
+	font: bold 1em 'Trebuchet MS', Arial, Sans-serif;
+	color: #333;	
+}
+.sameash4 { font-size: 1.0em; }
+
+.sub-menu
+{
+    font-size:10px;
+    font-style:italic;
+    color:black;
+}
+
+.process-gif
+{
+    border:0px;
+    vertical-align:bottom; 
+    visibility:hidden;
+}
+
+.parse
+{
+    text-align:left;
+    font-family:'Lucida Console', courier, monospace;
+    font-size:10px;
+    line-height:50%;
+    background-color:#F2F2F2;
+}
+.parse .parse-error
+{
+    color:red;
+    background-color:#F9E9E9;
+}
+#ipv6-link
+{
+	color: #4284B0;
+	background-color: inherit;
+	text-decoration: none;
+    
+}
+#ipv6-link:hover
+{
+	color: #9EC068;
+	background-color: inherit;
+	cursor:pointer;
+}
+
+/********************************************************************
+  from old iframe.css
+********************************************************************/
+#body
+{
+}
+#state-display th
+{
+    text-align:left;
+}
+#state-display td
+{
+    text-align:right;
+}
+
+.self-attrs
+{
+    border-collapse:collapse;
+    text-align:center;
+    border: 1px solid black;
+}
+.self-attrs td, .self-attrs th
+{
+    border: 1px solid black;
+    margin:0;
+    padding:0 2px 0 2px;
+}
+.self-attrs td.self-attrs-left, .self-attrs th.self-attrs-left
+{
+    text-align:left;
+}
+.self-attrs .self-attrs-ok
+{
+    color:green;
+}
+.self-attrs .self-attrs-error
+{
+    color:red;
+}
+
+.non-ascii
+{
+    color:#8A0808;
+    font-weight:bold;
+}
+.control-char
+{
+    font-size:9px;
+    color:#8A0808;
+    font-weight:bold;
+}
+
+.log-table
+{
+    border:0px;
+    border-spacing:0px;
+    text-align:right;
+    font-family:'Lucida Console', courier, monospace;
+    font-size:10px;
+}
+.log-table td, .log-table th
+{
+    border:0px;
+    border-spacing:0px;
+    margin:0;
+    padding:0 2px 0 2px;
+    vertical-align:top;
+}
+.log-table td.log-msg
+{
+    text-align:left;
+}
+.log-table th.log-msg
+{
+    text-align:left;
+}
+.log-table tr.even
+{
+    /*
+    background-color:#E0F8E0;
+    background-color:#EFFBEF;
+    color:#7401DF;
+    background-color:#E3CEF6;
+    color:#0000FF;
+    
+    empty
+    color:#009933;
+    background-color:#CEF6CE;
+    background-color:#F8F8F8;
+    */
+    background-color:#EDEDED;
+}
+.log-table tr.odd
+{
+    background-color:#F8F8F8;
+}
+.log-table .empty
+{
+    color:#009933;
+}
+.log-table .control-char
+{
+    font-size:9px;
+    color:black;
+}
+/*
+.log-table .non-ascii
+{
+    font-size:9px;
+    background-color:#F6CECE;
+}
+*/
+.log-table .match
+{
+    color:blue;
+    background-color:#CEE3F6;
+}
+.log-table .nomatch-arrow
+{
+    color:red;
+}
+.log-table .nomatch .non-ascii
+{
+    color:black;
+}
+.log-table .match .non-ascii
+{
+    color:#B404AE;
+    background-color:#CEE3F6;
+}
+.log-table .nomatch .control-char
+{
+    color:black;
+}
+.log-table .match .control-char
+{
+    color:#B404AE;
+    background-color:#CEE3F6;
+}
+
+.stats
+{
+    border-collapse:collapse;
+    border-spacing:0px;
+    text-align:right;
+    border: 1px solid black;
+    font-family:courier, monospace;
+    font-size:9px;
+}
+.stats td, .stats th
+{
+    border: 1px solid black;
+    border-spacing:0px;
+    margin:0;
+    padding:0 2px 0 2px;
+}
+.stats .stats-hdr
+{
+    text-align:left;
+    font-family:Verdana, Tahoma, Helvetica, sans-serif;
+    font-size:12px;
+    /*
+    border: 1px solid black;
+    border-spacing:0px;
+    margin:0;
+    padding:0 2px 0 2px;
+    */
+}
+
+.ast-highlight-even
+{
+    color:#0080FF;
+    background-color:#CEE3F6;
+}
+.ast-highlight-odd
+{
+    color:#CEE3F6;
+    background-color:#0080FF;
+    /*
+    color:#FF0080;
+    background-color:#F6CEF5;
+    */
+}
+.ast-empty
+{
+    color:#009933;
+    background-color:#CEF6CE;
+}
+.phrase-table
+{
+    border:0px;
+    border-spacing:0px;
+    text-align:left;
+    font-family:'Lucida Console', courier, monospace;
+    font-size:10px;
+}
+.phrase-table td, .phrase-table td.right, .phrase-table th
+{
+    border:0px;
+    border-spacing:0px;
+    margin:0;
+    padding:0 5px 0 5px;
+}
+.phrase-table td.right
+{
+    text-align:right;
+}
+
+.popup-button-top{margin:10px 15px;}
+.popup-button-bottom{margin:0px 15px 10px;}
+
+table.doc-table
+{
+    margin: 10px 15px;
+    border-collapse:collapse;
+}
+
+table.doc-table tr
+{
+    vertical-align:bottom;
+}
+table.doc-table td, table.doc-table th
+{
+    border: 1px solid black;
+    padding: 0 5px 0 5px;
+}
+
+.figure-right
+{
+    float: right;
+    margin: 0 15px 0 5px;
+}
