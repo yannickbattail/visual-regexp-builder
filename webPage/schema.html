@@ -1,0 +1,101 @@
+<html>
+<head>
+<style type="text/css">
+#schema {
+	border-width: 2px;
+	border-style: inset;
+}
+
+#regexp {
+	font-size: 16px;
+	font-weight: bold;
+	width: 400px;
+}
+
+#buttons {
+	display: none;
+	position: absolute;
+	background-color: white;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.button {
+	background-color: white;
+	border-width: 1px;
+	border-style: dotted;
+}
+
+.button:hover {
+	background-color: grey;
+}
+
+#actionBar {
+	font-weight: bold;
+}
+
+#close {
+	display: inline;
+	float: right;
+}
+
+#close:hover {
+	background-color: grey;
+}
+
+.node {
+	display: block;
+	border-width: 1px;
+	border-style: solid;
+	padding: 2px;
+}
+
+.showButtons {
+	display: inline;
+}
+</style>
+<script type="text/javascript" src="htmlUtil.js"></script>
+<script type="text/javascript" src="schema.js"></script>
+</head>
+<body>
+	<h1>building schema</h1>
+	At begining of string
+	<input type="checkbox" id="atStart" value="1" onchange="refesh()" />
+	<br />
+	<div id="schema">
+		<div></div>
+	</div>
+	<br />At end of string
+	<input type="checkbox" id="atEnd" value="1" onchange="refesh()" />
+	<br />
+	<br />Options:
+	<ul>
+		<li><input type="checkbox" id="optG" value="1" onchange="refesh()" />Global match
+			(match several times)</li>
+		<li><input type="checkbox" id="optI" value="1" onchange="refesh()" />Ignore case</li>
+		<li><input type="checkbox" id="optM" value="1" onchange="refesh()" />Working over
+			multiple lines</li>
+	</ul>
+	<!-- <input type="button" onclick="buildRegexp()" value="Build Regexp" /> -->
+	<label>The regexp: <input type="text" id="regexp" value="" /></label>
+
+	<div id="buttons">
+		<div id="actionBar">
+			Actions
+			<div id="close" onclick="closeButtons()" class="button">X</div>
+		</div>
+		<div id="addText" onclick="addText()" class="button">add text</div>
+		<div id="addQuantifier" onclick="addQuantifier()" class="button">add
+			quantifier</div>
+		<div id="addCharRange" onclick="addCharRange()" class="button">add
+			char range</div>
+		<div id="addCharClass" onclick="addCharClass()" class="button">add
+			char class</div>
+		<div id="addCharClass" onclick="addOr()" class="button">add
+			alternative (OR)</div>
+		<div id="del" onclick="del()" class="button">delete</div>
+</body>
+<script type="text/javascript">
+    init();
+</script>
+</html>

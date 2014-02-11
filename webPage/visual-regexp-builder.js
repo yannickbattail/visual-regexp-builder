@@ -71,6 +71,13 @@ function main()
 // phraseIndex - the index of the first character of the phrase being examined
 // e.g. chars[phraseIndex] is the first character code of the phrase
 // data - user-defined data, specified in parser call to "syntaxAnalysis()"
+/**
+ * @param state
+ * @param chars
+ * @param phraseIndex
+ * @param data
+ * 
+ */
 function synSectionName(state, chars, phraseIndex, data) {
     // handwritten parser to eliminate lots of calls to alpha & digit
     if (state[OP_STATE] == APG_ACTIVE) {
@@ -80,7 +87,7 @@ function synSectionName(state, chars, phraseIndex, data) {
             if ((thisChar >= 65 && thisChar <= 90) || (thisChar >= 97 && thisChar <= 122) || (thisChar >= 48 && thisChar <= 57) || (thisChar == 95)) {
                 count += 1;
             } else {
-                break
+                break;
             }
         }
         if (count > 0) {
@@ -101,7 +108,7 @@ function synValueName(state, chars, phraseIndex, data) {
             if ((thisChar >= 65 && thisChar <= 90) || (thisChar >= 97 && thisChar <= 122) || (thisChar >= 48 && thisChar <= 57) || (thisChar == 95)) {
                 count += 1;
             } else {
-                break
+                break;
             }
         }
         if (count > 0) {
@@ -122,7 +129,7 @@ function synAlphaDigit(state, chars, phraseIndex, data) {
             if ((thisChar >= 65 && thisChar <= 90) || (thisChar >= 97 && thisChar <= 122) || (thisChar >= 48 && thisChar <= 57)) {
                 count += 1;
             } else {
-                break
+                break;
             }
         }
         if (count > 0) {
@@ -158,8 +165,8 @@ function SyntaxCallbacks(ruleIds) {
         this.chars = chars; // the input string characters (array of ASCII character codes, not a string)
         this.log = log; // a msgLog() object
         this.lineno = 0; // the current line number, for error reporting
-    }
-
+    };
+    
     // ruleID - from the grammar opcodes
     // synList - an empty array for the call back function pointers
     this.callbackList = function(ruleID, synList) {
@@ -348,7 +355,6 @@ function main() {
     while (true) {
         if (log.count() !== 0) {
             html += log.logDisplay('syntaxAnalysis analysis errors encountered');
-            ;
             break;
         }
         if (!test) {
@@ -360,7 +366,6 @@ function main() {
         parser.semanticAnalysis(semCallbacks);
         if (log.count() !== 0) {
             html += log.logDisplay('semanticAnalysis analysis errors encountered');
-            ;
             break;
         }
         
