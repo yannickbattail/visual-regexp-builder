@@ -17,6 +17,11 @@ function gel(id) {
     return document.getElementById(id);
 }
 
+function getSel(id) {
+    var e = gel(id);
+    return e.options[e.selectedIndex].value;
+}
+
 function getValue(id) {
     var e = gel(id);
     if (e.tagName == 'SELECT') {

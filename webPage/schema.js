@@ -1,10 +1,37 @@
-currentId = 0;
-selectedNode = null;
+var currentId = 0;
+var selectedNode = null;
+
+function escapeCharFactor(string) {
+    return String(string).replace(/[\/\\\[\]{}()?+*|.\^$]/g, '\\$&');
+}
+
+function escapeCharClass(string) {
+    return String(string).replace(/[\/\\\[\]\^\-]/g, '\\$&');
+}
 
 function getNodeNum(selectedNode) {
     var t = selectedNode.id.split('-');
     return t[1];
 }
+
+var predefinedClasses = {
+    "\\d": "digit",
+    "\\s": "whitespace",
+    "\\w": "word character",
+    "\\t": "tab",
+    "\\n": "new line",
+    "\\r": "carriage return",
+    "\\f": "form feed",
+    // "\\b": "word boundary",
+    "\\b": "backspace",
+    "a-z": "alpha lowercase",
+    "A-Z": "alpha uppercase",
+    "a-zA-Z": "alpha upper and lower case",
+    "a-zA-Z0-9": "alphanum",
+    "a-f0-9": "headecimal lowercase",
+    "A-F0-9": "headecimal uppercase",
+    "a-fA-F0-9": "headecimal upper and lower case"
+};
 
 function showButtons(event, node) {
     selectedNode = node;
@@ -57,6 +84,28 @@ function addCharClass() {
     html += '  <input type="hidden" id="type-' + n + '" value="charClass" />';
     html += '  (Not<input type="checkbox" id="value2-' + n + '" value="1" onchange="refesh()" />)';
     html += '  one of theses char <input type="text" id="value-' + n + '" value="0123456789ABCDEF" onkeyup="refesh()" />';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    div.innerHTML += html;
+    selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
+    closeButtons();
+    refesh();
+}
+
+function addPredefinedClass() {
+    currentId++;
+    var n = currentId;
+    var div = document.createElement("div");
+    div.setAttribute('id', 'node-' + n);
+    div.setAttribute('class', 'node');
+    var html = '';
+    html += '  <input type="hidden" id="type-' + n + '" value="predefinedClass" />';
+    html += '  (Not<input type="checkbox" id="value2-' + n + '" value="1" onchange="refesh()" />)';
+    html += '  one char <select id="value-' + n + '" onchange="refesh()">';
+    for ( var val in predefinedClasses) {
+        var display = predefinedClasses[val];
+        html += '  <option value="' + val + '">' + display + '</option>';
+    }
+    html += '  </select>';
     html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
@@ -163,7 +212,7 @@ function buildRegexpRecurs(nodes) {
             var v1 = gel('value-' + n) ? getValue('value-' + n) : null;
             var v2 = gel('value2-' + n) ? getValue('value2-' + n) : null;
             if (gel('type-' + n).value == "text") {
-                regexp += v1;
+                regexp += escapeCharFactor(v1);
             } else if (gel('type-' + n).value == "quantifier") {
                 if (!v1) {
                     v1 = 0;
@@ -180,11 +229,19 @@ function buildRegexpRecurs(nodes) {
                     regexp += '{' + v1 + ',' + v2 + '}';
                 }
             } else if (gel('type-' + n).value == "charClass") {
+                regexp += '[';
                 if (v2) {
-                    regexp += '[^' + v1 + ']';
-                } else {
-                    regexp += '[' + v1 + ']';
+                    regexp += '^';
                 }
+                regexp += escapeCharClass(v1);
+                regexp += ']';
+            } else if (gel('type-' + n).value == "predefinedClass") {
+                regexp += '[';
+                if (v2) {
+                    regexp += '^';
+                }
+                regexp += v1;
+                regexp += ']';
             } else if (gel('type-' + n).value == "charRange") {
                 regexp += '[' + v1 + '-' + v2 + ']';
             } else if (gel('type-' + n).value == "or") {
@@ -200,6 +257,23 @@ function buildRegexpRecurs(nodes) {
         }
     }
     return regexp;
+}
+
+function testRegexp() {
+    try {
+        var theRegexp = eval(gel('regexp').value);
+        var res = gel('test').value.match(theRegexp);
+        if (res == null) {
+            gel('errMsg').innerHTML = 'Nothing matches in the string.';
+            gel('result').value = '';
+        } else {
+            gel('result').value = res.join('\n');
+            gel('errMsg').innerHTML = '';
+        }
+    } catch (e) {
+        gel('errMsg').innerHTML = 'Some thing is wrong in the regexp. Error message: ' + e.message;
+    }
+    
 }
 
 function init() {

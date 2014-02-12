@@ -60,6 +60,10 @@
 .showButtons {
 	display: inline;
 }
+
+#errMsg {
+	background-color: grey;
+}
 </style>
 <script type="text/javascript" src="htmlUtil.js"></script>
 <script type="text/javascript" src="schema.js"></script>
@@ -72,7 +76,7 @@
 	<div id="schema">
 		<div></div>
 	</div>
-	<br />At end of string
+	At end of string
 	<input type="checkbox" id="atEnd" value="1" onchange="refesh()" />
 	<br />
 	<br />Options:
@@ -86,6 +90,14 @@
 	</ul>
 	<!-- <input type="button" onclick="buildRegexp()" value="Build Regexp" /> -->
 	<label>The regexp: <input type="text" id="regexp" value="" /></label>
+	<br />
+	<hr />
+	<label>Test string: <textarea id="test"></textarea></label>
+	<button onclick="testRegexp()">Test</button>
+	<br />
+	Result:
+	<textarea id="result"></textarea>
+	<div id="errMsg"></div>
 
 	<div id="buttons">
 		<div id="actionBar">
@@ -99,10 +111,12 @@
 			char range</div>
 		<div id="addCharClass" onclick="addCharClass()" class="button">add
 			char class</div>
+		<div id="addPredefinedClass" onclick="addPredefinedClass()"
+			class="button">add predefined class</div>
 		<div id="addOr" onclick="addOr()" class="button">add alternative
 			(OR)</div>
-		<div id="addGroup" onclick="addGroup()" class="button">add
-			group (...)</div>
+		<div id="addGroup" onclick="addGroup()" class="button">add group
+			(...)</div>
 		<div id="del" onclick="del()" class="button">delete</div>
 </body>
 <script type="text/javascript">
