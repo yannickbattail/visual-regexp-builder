@@ -55,7 +55,8 @@ function addCharClass() {
     div.setAttribute('class', 'node');
     var html = '';
     html += '  <input type="hidden" id="type-' + n + '" value="charClass" />';
-    html += '  One of theses char <input type="text" id="value-' + n + '" value="0123456789ABCDEF" onkeyup="refesh()" />';
+    html += '  (Not<input type="checkbox" id="value2-' + n + '" value="1" onchange="refesh()" />)';
+    html += '  one of theses char <input type="text" id="value-' + n + '" value="0123456789ABCDEF" onkeyup="refesh()" />';
     html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
@@ -98,6 +99,25 @@ function addOr() {
     refesh();
 }
 
+function addGroup() {
+    currentId++;
+    var n = currentId;
+    var div = document.createElement("div");
+    div.setAttribute('id', 'node-' + n);
+    div.setAttribute('class', 'node');
+    var html = '';
+    html += '  <input type="hidden" id="type-' + n + '" value="group" />';
+    html += '  Group (not<input type="checkbox" id="value-' + n + '" value="1" onchange="refesh()" /> capturing)';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div id="group-' + n + '" class="group"><div></div></div>';
+    div.innerHTML += html;
+    selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
+    selectedNode = gel('group-' + n).firstChild;
+    addText();
+    closeButtons();
+    refesh();
+}
+
 function del() {
     selectedNode.parentNode.removeChild(selectedNode);
     closeButtons();
@@ -111,15 +131,37 @@ function closeButtons() {
 function refesh() {
     buildRegexp();
 }
+
 function buildRegexp() {
     var regexp = '';
-    var nodes = gel('schema').childNodes;
+    regexp += buildRegexpRecurs(gel('schema').childNodes);
+    if (getValue('atStart')) {
+        regexp = '^' + regexp;
+    }
+    if (getValue('atEnd')) {
+        regexp += '$';
+    }
+    regexp = '/' + regexp + '/';
+    if (getValue('optG')) {
+        regexp += 'g';
+    }
+    if (getValue('optI')) {
+        regexp += 'i';
+    }
+    if (getValue('optM')) {
+        regexp += 'm';
+    }
+    gel('regexp').value = regexp;
+}
+
+function buildRegexpRecurs(nodes) {
+    var regexp = '';
     for (var i = 0; i < nodes.length; i++) {
         var node = nodes[i];
         if (node.nodeType == Node.ELEMENT_NODE && node.id) {
             var n = getNodeNum(node);
-            var v1 = gel('value-' + n) ? gel('value-' + n).value : null;
-            var v2 = gel('value2-' + n) ? gel('value2-' + n).value : null;
+            var v1 = gel('value-' + n) ? getValue('value-' + n) : null;
+            var v2 = gel('value2-' + n) ? getValue('value2-' + n) : null;
             if (gel('type-' + n).value == "text") {
                 regexp += v1;
             } else if (gel('type-' + n).value == "quantifier") {
@@ -138,31 +180,26 @@ function buildRegexp() {
                     regexp += '{' + v1 + ',' + v2 + '}';
                 }
             } else if (gel('type-' + n).value == "charClass") {
-                regexp += '[' + v1 + ']';
+                if (v2) {
+                    regexp += '[^' + v1 + ']';
+                } else {
+                    regexp += '[' + v1 + ']';
+                }
             } else if (gel('type-' + n).value == "charRange") {
                 regexp += '[' + v1 + '-' + v2 + ']';
             } else if (gel('type-' + n).value == "or") {
                 regexp += '|';
+            } else if (gel('type-' + n).value == "group") {
+                regexp += '(';
+                if (v1) {
+                    regexp += '?:';
+                }
+                regexp += buildRegexpRecurs(gel('group-' + n).childNodes);
+                regexp += ')';
             }
         }
     }
-    if (getValue('atStart')) {
-        regexp = '^' + regexp;
-    }
-    if (getValue('atEnd')) {
-        regexp += '$';
-    }
-    regexp = '/' + regexp + '/';
-    if (getValue('optG')) {
-        regexp += 'g';
-    }
-    if (getValue('optI')) {
-        regexp += 'i';
-    }
-    if (getValue('optM')) {
-        regexp += 'm';
-    }
-    gel('regexp').value = regexp;
+    return regexp;
 }
 
 function init() {
