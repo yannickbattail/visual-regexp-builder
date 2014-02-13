@@ -1,74 +1,13 @@
+<!DOCTYPE html>
 <html>
 <head>
-<style type="text/css">
-#schema {
-	border-width: 2px;
-	border-style: inset;
-}
-
-.group {
-	border-width: 2px;
-	border-style: inset;
-	padding-left: 20px;
-}
-
-#regexp {
-	font-size: 16px;
-	font-weight: bold;
-	width: 400px;
-}
-
-#buttons {
-	display: none;
-	position: absolute;
-	background-color: white;
-	border-width: 1px;
-	border-style: solid;
-}
-
-.button {
-	background-color: white;
-	border-width: 1px;
-	border-style: dotted;
-}
-
-.button:hover {
-	background-color: grey;
-}
-
-#actionBar {
-	font-weight: bold;
-}
-
-#close {
-	display: inline;
-	float: right;
-}
-
-#close:hover {
-	background-color: grey;
-}
-
-.node {
-	display: block;
-	border-width: 1px;
-	border-style: solid;
-	padding: 2px;
-	margin: 1px;
-}
-
-.showButtons {
-	display: inline;
-}
-
-#errMsg {
-	background-color: grey;
-}
-</style>
+<title>Visual RegExp builder</title>
+<link rel="stylesheet" type="text/css" href="schema_custom.css" />
+<link rel="stylesheet" type="text/css" href="schema_mandatory.css" />
 <script type="text/javascript" src="htmlUtil.js"></script>
 <script type="text/javascript" src="schema.js"></script>
 </head>
-<body>
+<body onclick="closeButtons()">
 	<h1>building schema</h1>
 	At begining of string
 	<input type="checkbox" id="atStart" value="1" onchange="refesh()" />
@@ -88,16 +27,25 @@
 		<li><input type="checkbox" id="optM" value="1"
 			onchange="refesh()" />Working over multiple lines</li>
 	</ul>
-	<!-- <input type="button" onclick="buildRegexp()" value="Build Regexp" /> -->
-	<label>The regexp: <input type="text" id="regexp" value="" /></label>
-	<br />
+	<label>The regexp: <input type="text" id="regexp" value=""
+		readonly="readonly" /></label>
 	<hr />
-	<label>Test string: <textarea id="test"></textarea></label>
-	<button onclick="testRegexp()">Test</button>
-	<br />
-	Result:
-	<textarea id="result"></textarea>
-	<div id="errMsg"></div>
+	<table>
+		<tr>
+			<th><label for="test">Test string: </label></th>
+			<td><textarea id="test" onkeyup="testRegexp()"></textarea></td>
+		</tr>
+		<tr>
+			<th>
+				<!-- <button onclick="testRegexp()">Test</button> -->
+			</th>
+			<td><div id="errMsg"></div></td>
+		</tr>
+		<tr>
+			<th><label for="result">Result: </label></th>
+			<td><textarea id="result"></textarea></td>
+		</tr>
+	</table>
 
 	<div id="buttons">
 		<div id="actionBar">
@@ -118,6 +66,7 @@
 		<div id="addGroup" onclick="addGroup()" class="button">add group
 			(...)</div>
 		<div id="del" onclick="del()" class="button">delete</div>
+	</div>
 </body>
 <script type="text/javascript">
     init();

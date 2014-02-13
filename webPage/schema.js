@@ -33,12 +33,17 @@ var predefinedClasses = {
     "a-fA-F0-9": "headecimal upper and lower case"
 };
 
+function closeButtons() {
+    gel('buttons').style.display = 'none';
+}
+
 function showButtons(event, node) {
     selectedNode = node;
     var buttons = gel('buttons');
-    buttons.style.left = event.pageX;
-    buttons.style.top = event.pageY;
     buttons.style.display = 'block';
+    buttons.style.left = '' + event.pageX + 'px';
+    buttons.style.top = '' + event.pageY + 'px';
+    event.stopPropagation();
 }
 
 function addText() {
@@ -50,7 +55,7 @@ function addText() {
     var html = '';
     html += '  <input type="hidden" id="type-' + n + '" value="text" />';
     html += '  Text <input type="text" id="value-' + n + '" value="abc" onkeyup="refesh()" />';
-    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
     closeButtons();
@@ -67,7 +72,7 @@ function addQuantifier() {
     html += '  <input type="hidden" id="type-' + n + '" value="quantifier" />';
     html += '  from <input type="text" id="value-' + n + '" value="1" size="2" onkeyup="refesh()" />times';
     html += '  to <input type="text" id="value2-' + n + '" value="2" size="2" onkeyup="refesh()" />times';
-    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
     closeButtons();
@@ -84,7 +89,7 @@ function addCharClass() {
     html += '  <input type="hidden" id="type-' + n + '" value="charClass" />';
     html += '  (Not<input type="checkbox" id="value2-' + n + '" value="1" onchange="refesh()" />)';
     html += '  one of theses char <input type="text" id="value-' + n + '" value="0123456789ABCDEF" onkeyup="refesh()" />';
-    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
     closeButtons();
@@ -106,7 +111,7 @@ function addPredefinedClass() {
         html += '  <option value="' + val + '">' + display + '</option>';
     }
     html += '  </select>';
-    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
     closeButtons();
@@ -123,7 +128,7 @@ function addCharRange() {
     html += '  <input type="hidden" id="type-' + n + '" value="charRange" />';
     html += '  from char <input type="text" id="value-' + n + '" value="a" size="2" onkeyup="refesh()" />';
     html += '  to char <input type="text" id="value2-' + n + '" value="z" size="2" onkeyup="refesh()" />';
-    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
     closeButtons();
@@ -139,7 +144,7 @@ function addOr() {
     var html = '';
     html += '  <input type="hidden" id="type-' + n + '" value="or" />';
     html += '  OR ';
-    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
     selectedNode = div;
@@ -157,7 +162,7 @@ function addGroup() {
     var html = '';
     html += '  <input type="hidden" id="type-' + n + '" value="group" />';
     html += '  Group (not<input type="checkbox" id="value-' + n + '" value="1" onchange="refesh()" /> capturing)';
-    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">#</div>';
+    html += '  <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
     html += '  <div id="group-' + n + '" class="group"><div></div></div>';
     div.innerHTML += html;
     selectedNode.parentNode.insertBefore(div, selectedNode.nextSibling);
@@ -173,12 +178,9 @@ function del() {
     refesh();
 }
 
-function closeButtons() {
-    gel('buttons').style.display = 'none';
-}
-
 function refesh() {
     buildRegexp();
+    testRegexp();
 }
 
 function buildRegexp() {
@@ -236,12 +238,17 @@ function buildRegexpRecurs(nodes) {
                 regexp += escapeCharClass(v1);
                 regexp += ']';
             } else if (gel('type-' + n).value == "predefinedClass") {
-                regexp += '[';
+                var r = '';
                 if (v2) {
-                    regexp += '^';
+                    if ((v1 == '\\d') || (v1 == '\\s') || (v1 == '\\w')) {
+                        r = v1.toUpperCase();
+                    } else {
+                        r += '^' + v1 + '';
+                    }
+                } else {
+                    r = v1;
                 }
-                regexp += v1;
-                regexp += ']';
+                regexp = '[' + r + ']';
             } else if (gel('type-' + n).value == "charRange") {
                 regexp += '[' + v1 + '-' + v2 + ']';
             } else if (gel('type-' + n).value == "or") {

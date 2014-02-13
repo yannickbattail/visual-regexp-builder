@@ -1,0 +1,59 @@
+#schema {
+	border-width: 2px;
+	border-style: inset;
+}
+
+.group {
+	border-width: 2px;
+	border-style: inset;
+	padding-left: 20px;
+}
+
+#regexp {
+	font-size: 16px;
+	font-weight: bold;
+	width: 400px;
+}
+
+#buttons {
+	display: none;
+	position: absolute;
+	background-color: white;
+	border-width: 1px;
+	border-style: solid;
+}
+
+.button {
+	background-color: white;
+	border-width: 1px;
+	border-style: dotted;
+}
+
+.button:hover {
+	background-color: grey;
+}
+
+#actionBar {
+	font-weight: bold;
+}
+
+#close {
+	display: inline;
+	float: right;
+}
+
+#close:hover {
+	background-color: grey;
+}
+
+.node {
+	display: block;
+	border-width: 1px;
+	border-style: solid;
+	padding: 2px;
+	margin: 1px;
+}
+
+.showButtons {
+	display: inline;
+}

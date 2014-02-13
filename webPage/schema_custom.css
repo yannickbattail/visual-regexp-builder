@@ -1,0 +1,14 @@
+.showButtons {
+	
+}
+
+}
+.showButtons:HOVER {
+	text-decoration: underline;
+	border-style: solid;
+	border-width: 1px;
+}
+
+#errMsg {
+	background-color: LightGray;
+}
