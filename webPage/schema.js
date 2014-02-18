@@ -14,7 +14,7 @@ function getNodeNum(selectedNode) {
     return t[1];
 }
 function getParent() {
-    
+
 }
 
 var predefinedClasses = {
@@ -217,7 +217,7 @@ function buildRegexpRecurs(nodeRoot) {
                 } else {
                     r = v1;
                 }
-                regexp = '[' + r + ']';
+                regexp += '[' + r + ']';
             } else if (gel('type-' + n).value == "charRange") {
                 regexp += '[' + v1 + '-' + v2 + ']';
             } else if (gel('type-' + n).value == "or") {
@@ -249,7 +249,7 @@ function testRegexp() {
     } catch (e) {
         gel('errMsg').innerHTML = 'Some thing is wrong in the regexp. Error message: ' + e.message;
     }
-    
+
 }
 
 function init() {
@@ -267,7 +267,7 @@ function drag(event) {
 
 /* events fired on the draggable target */
 document.addEventListener("drag", function(event) {
-    
+
 }, false);
 
 document.addEventListener("dragstart", function(event) {
@@ -296,7 +296,7 @@ document.addEventListener("dragenter", function(event) {
     if (event.target.parentNode.className == "group") {
         event.target.style.background = "chartreuse";
     }
-    
+
 }, false);
 
 document.addEventListener("dragleave", function(event) {
@@ -307,7 +307,7 @@ document.addEventListener("dragleave", function(event) {
     if (event.target.parentNode.className == "group") {
         event.target.style.background = "";
     }
-    
+
 }, false);
 
 document.addEventListener("drop", function(event) {
@@ -346,5 +346,5 @@ document.addEventListener("drop", function(event) {
         // event.target.appendChild(dragged);
         refesh();
     }
-    
+
 }, false);
