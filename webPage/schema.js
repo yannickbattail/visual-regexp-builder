@@ -290,7 +290,10 @@ document.addEventListener("dragover", function(event) {
 
 document.addEventListener("dragenter", function(event) {
     // highlight potential drop target when the draggable element enters it
-    if ((event.target.className == "group") || (event.target.parentNode.className == "group")) {
+    if (event.target.className == "group") {
+        event.target.style.background = "chartreuse";
+    }
+    if (event.target.parentNode.className == "group") {
         event.target.style.background = "chartreuse";
     }
     
@@ -298,7 +301,10 @@ document.addEventListener("dragenter", function(event) {
 
 document.addEventListener("dragleave", function(event) {
     // reset background of potential drop target when the draggable element leaves it
-    if ((event.target.className == "group") || (event.target.parentNode.className == "group")) {
+    if (event.target.className == "group") {
+        event.target.style.background = "";
+    }
+    if (event.target.parentNode.className == "group") {
         event.target.style.background = "";
     }
     
@@ -307,17 +313,37 @@ document.addEventListener("dragleave", function(event) {
 document.addEventListener("drop", function(event) {
     // prevent default action (open as link for some elements)
     event.preventDefault();
+    if (event.target == dragged) {
+        event.target.style.background = "";
+        // dragged in the same node
+        return;
+    }
     // move dragged elem to the selected drop target
     if (event.target.className == "group") {
         event.target.style.background = "";
-        dragged.parentNode.removeChild(dragged);
-        event.target.appendChild(dragged);
+        if (dragged.parentNode.id == 'pieces') {
+            var newNode = dragged.cloneNode(true);
+            currentId++;
+            newNode.innerHTML = newNode.innerHTML.replace(new RegExp('XXX', 'g'), String(currentId));
+            newNode.id = newNode.id.replace('XXX', String(currentId));
+            for (var i = 0; i < newNode.getElementsByTagName('BUTTON').length; i++) {
+                var child = newNode.getElementsByTagName('BUTTON')[i];
+                child.disabled = false;
+            }
+            newNode.setAttribute("style","");
+            dragged = newNode;
+        } else {
+            dragged.parentNode.removeChild(dragged);
+        }
+        if (event.target.id != 'recycledBin') {
+            event.target.appendChild(dragged);
+        }
         refesh();
     } else if (event.target.parentNode.className == "group") {
         event.target.style.background = "";
         dragged.parentNode.removeChild(dragged);
         event.target.parentNode.insertBefore(dragged, event.target);
-        //event.target.appendChild(dragged);
+        // event.target.appendChild(dragged);
         refesh();
     }
     
