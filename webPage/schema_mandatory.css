@@ -50,7 +50,8 @@
 }
 
 .delButtons {
-	display: inline;
+	/*display: inline;*/
+	display: none;
 }
 
 #schema {
