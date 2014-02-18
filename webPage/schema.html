@@ -12,8 +12,8 @@
 	At begining of string
 	<input type="checkbox" id="atStart" value="1" onchange="refesh()" />
 	<br />
-	<div id="schema">
-		<div></div>
+	<button onclick="showButtons(event, gel('schema'));" class="showButtons">Add element</button>
+	<div id="schema" class="group">
 	</div>
 	At end of string
 	<input type="checkbox" id="atEnd" value="1" onchange="refesh()" />
@@ -52,20 +52,19 @@
 			Actions
 			<div id="close" onclick="closeButtons()" class="button">X</div>
 		</div>
-		<div id="addText" onclick="addText()" class="button">add text</div>
-		<div id="addQuantifier" onclick="addQuantifier()" class="button">add
+		<div id="addText" onclick="addGeneric(addText)" class="button">add text</div>
+		<div id="addQuantifier" onclick="addGeneric(addQuantifier)" class="button">add
 			quantifier</div>
-		<div id="addCharRange" onclick="addCharRange()" class="button">add
+		<div id="addCharRange" onclick="addGeneric(addCharRange)" class="button">add
 			char range</div>
-		<div id="addCharClass" onclick="addCharClass()" class="button">add
+		<div id="addCharClass" onclick="addGeneric(addCharClass)" class="button">add
 			char class</div>
-		<div id="addPredefinedClass" onclick="addPredefinedClass()"
+		<div id="addPredefinedClass" onclick="addGeneric(addPredefinedClass)"
 			class="button">add predefined class</div>
-		<div id="addOr" onclick="addOr()" class="button">add alternative
+		<div id="addOr" onclick="addGeneric(addOr)" class="button">add alternative
 			(OR)</div>
-		<div id="addGroup" onclick="addGroup()" class="button">add group
+		<div id="addGroup" onclick="addGeneric(addGroup)" class="button">add group
 			(...)</div>
-		<div id="del" onclick="del()" class="button">delete</div>
 	</div>
 </body>
 <script type="text/javascript">

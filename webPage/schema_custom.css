@@ -1,3 +1,7 @@
+#schema {
+	
+}
+
 .showButtons {
 	
 }
@@ -11,4 +15,24 @@
 
 #errMsg {
 	background-color: LightGray;
+}
+
+.node {
+	border-width: 1px;
+	border-style: solid;
+	padding: 2px;
+	margin-left: 20px;
+	margin: 8px;
+	background-color: #F5F5F5;
+	/*background-color: Chartreuse;*/
+	cursor: move;
+}
+
+.group {
+	border-width: 2px;
+	border-style: inset;
+	padding: 0;
+	padding-bottom: 6px;
+	margin: 2px;
+	background-color: white;
 }
