@@ -55,16 +55,14 @@
 }
 
 #schema {
-	width: 400px;
+	width: 500px;
 }
 
 #recycledBin {
 	width: 100px;
 	height: 100px;
-	background-color: graytext;
-	color: white;
 }
 
-#pieces {
-	width: 400px;
+#ressources {
+	width: 360px;
 }

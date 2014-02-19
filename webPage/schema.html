@@ -13,11 +13,9 @@
 		<tr>
 			<td>At begining of string <input type="checkbox" id="atStart"
 				value="1" onchange="refesh()" /> <br />
-				<!-- <button onclick="showButtons(event, gel('schema'));"
-					class="showButtons">Add element</button> -->
 				<div id="schema" class="group">schema</div> At end of string <input
 				type="checkbox" id="atEnd" value="1" onchange="refesh()" /> <br />
-				<br />Options:
+				Options:
 				<ul>
 					<li><input type="checkbox" id="optG" value="1"
 						onchange="refesh()" />Global match (match several times)</li>
@@ -31,14 +29,14 @@
 				<div id="recycledBin" class="group">Recycled bin</div>
 			</td>
 			<td>
-				<div id="pieces" class="group">
+				<div id="ressources" class="group">
 					Ressources (Drag and drop them in the schema)
 					<div id="node-XXX" class="node" ondragstart="drag(event)"
 						draggable="true">
 						<input type="hidden" id="type-XXX" value="text" /> Text <input
-							type="text" id="value-XXX" value="abc" onkeyup="refesh()" />
-						<button disabled="disabled" onclick="delMe(event, this.parentNode);"
-							class="delButtons">X</button>
+							type="text" id="value-XXX" value="Hello" onkeyup="refesh()"
+							onfocus="this.parentNode.draggable=false"
+							onblur="this.parentNode.draggable=true" />
 					</div>
 
 					<div id="node-XXX" class="node" ondragstart="drag(event)"
@@ -47,8 +45,6 @@
 							type="text" id="value-XXX" value="1" size="2" onkeyup="refesh()" />times
 						to <input type="text" id="value2-XXX" value="2" size="2"
 							onkeyup="refesh()" />times
-						<button disabled="disabled" onclick="delMe(event, this.parentNode);"
-							class="delButtons">X</button>
 					</div>
 
 					<div id="node-XXX" class="node" ondragstart="drag(event)"
@@ -56,9 +52,7 @@
 						<input type="hidden" id="type-XXX" value="charClass" /> (Not<input
 							type="checkbox" id="value2-XXX" value="1" onchange="refesh()" />)
 						one of theses char <input type="text" id="value-XXX"
-							value="0123456789ABCDEF" onkeyup="refesh()" />
-						<button disabled="disabled" onclick="delMe(event, this.parentNode);"
-							class="delButtons">X</button>
+							value="aeiouy" onkeyup="refesh()" />
 					</div>
 
 					<div id="node-XXX" class="node" ondragstart="drag(event)"
@@ -75,17 +69,14 @@
 							<option value="\r">carriage return</option>
 							<option value="\f">form feed</option>
 							<option value="\b">backspace</option>
-							<option value="a-z">alpha lowercase</option>
-							<option value="A-Z">alpha uppercase</option>
-							<option value="a-zA-Z">alpha upper and lower case</option>
+							<option value="a-z">alpha lower case</option>
+							<option value="A-Z">alpha upper case</option>
+							<option value="a-zA-Z">alpha upper and lower</option>
 							<option value="a-zA-Z0-9">alphanum</option>
-							<option value="a-f0-9">headecimal lowercase</option>
-							<option value="A-F0-9">headecimal uppercase</option>
-							<option value="a-fA-F0-9">headecimal upper and lower
-								case</option>
+							<option value="a-f0-9">hexadecimal lowercase</option>
+							<option value="A-F0-9">hexadecimal uppercase</option>
+							<option value="a-fA-F0-9">hexa upper and lower</option>
 						</select>
-						<button disabled="disabled" onclick="delMe(event, this.parentNode);"
-							class="delButtons">X</button>
 					</div>
 
 					<div id="node-XXX" class="node" ondragstart="drag(event)"
@@ -94,15 +85,11 @@
 						<input type="text" id="value-XXX" value="a" size="2"
 							onkeyup="refesh()" /> to char <input type="text" id="value2-XXX"
 							value="z" size="2" onkeyup="refesh()" />
-						<button disabled="disabled" onclick="delMe(event, this.parentNode);"
-							class="delButtons">X</button>
 					</div>
 
 					<div id="node-XXX" class="node" ondragstart="drag(event)"
 						draggable="true">
 						<input type="hidden" id="type-XXX" value="or" /> OR
-						<button disabled="disabled" onclick="delMe(event, this.parentNode);"
-							class="delButtons">X</button>
 					</div>
 
 					<div id="node-XXX" class="node" ondragstart="drag(event)"
@@ -110,10 +97,6 @@
 						<input type="hidden" id="type-XXX" value="group" /> Group (not<input
 							type="checkbox" id="value-XXX" value="1" onchange="refesh()" />
 						capturing)
-						<button disabled="disabled" onclick="delMe(event, this.parentNode);"
-							class="delButtons">X</button>
-						<button disabled="disabled" onclick="showButtons(event, gel(\'group-XXX\'));"
-							class="showButtons">Add element</button>
 						<div id="group-XXX" class="group"></div>
 					</div>
 				</div>
@@ -139,27 +122,6 @@
 			<td><textarea id="result"></textarea></td>
 		</tr>
 	</table>
-
-	<div id="buttons">
-		<div id="actionBar">
-			Actions
-			<div id="close" onclick="closeButtons()" class="button">X</div>
-		</div>
-		<div id="addText" onclick="addGeneric(addText)" class="button">add
-			text</div>
-		<div id="addQuantifier" onclick="addGeneric(addQuantifier)"
-			class="button">add quantifier</div>
-		<div id="addCharRange" onclick="addGeneric(addCharRange)"
-			class="button">add char range</div>
-		<div id="addCharClass" onclick="addGeneric(addCharClass)"
-			class="button">add char class</div>
-		<div id="addPredefinedClass" onclick="addGeneric(addPredefinedClass)"
-			class="button">add predefined class</div>
-		<div id="addOr" onclick="addGeneric(addOr)" class="button">add
-			alternative (OR)</div>
-		<div id="addGroup" onclick="addGeneric(addGroup)" class="button">add
-			group (...)</div>
-	</div>
 </body>
 <script type="text/javascript">
     init();

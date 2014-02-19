@@ -13,138 +13,6 @@ function getNodeNum(selectedNode) {
     var t = selectedNode.id.split('-');
     return t[1];
 }
-function getParent() {
-
-}
-
-var predefinedClasses = {
-    "\\d": "digit",
-    "\\s": "whitespace",
-    "\\w": "word character",
-    "\\t": "tab",
-    "\\n": "new line",
-    "\\r": "carriage return",
-    "\\f": "form feed",
-    // "\\b": "word boundary",
-    "\\b": "backspace",
-    "a-z": "alpha lowercase",
-    "A-Z": "alpha uppercase",
-    "a-zA-Z": "alpha upper and lower case",
-    "a-zA-Z0-9": "alphanum",
-    "a-f0-9": "headecimal lowercase",
-    "A-F0-9": "headecimal uppercase",
-    "a-fA-F0-9": "headecimal upper and lower case"
-};
-
-function closeButtons() {
-    gel('buttons').style.display = 'none';
-}
-
-function showButtons(event, node) {
-    selectedNode = node;
-    var buttons = gel('buttons');
-    buttons.style.display = 'block';
-    buttons.style.left = '' + event.pageX + 'px';
-    buttons.style.top = '' + event.pageY + 'px';
-    event.stopPropagation();
-}
-
-function addGeneric(type) {
-    currentId++;
-    var n = currentId;
-    var div = document.createElement("div");
-    div.setAttribute('id', 'node-' + n);
-    div.setAttribute('class', 'node');
-    div.setAttribute('ondragstart', 'drag(event)');
-    div.setAttribute('draggable', true);
-    div.innerHTML += type(n);
-    selectedNode.appendChild(div);
-    closeButtons();
-    refesh();
-}
-
-function addText(n) {
-    var html = '';
-    html += '  <input type="hidden" id="type-' + n + '" value="text" />';
-    html += '  Text <input type="text" id="value-' + n + '" value="abc" onkeyup="refesh()" />';
-    // html += ' <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
-    html += '  <button onclick="delMe(event, this.parentNode);" class="delButtons">X</button>';
-    return html;
-}
-
-function addQuantifier(n) {
-    var html = '';
-    html += '  <input type="hidden" id="type-' + n + '" value="quantifier" />';
-    html += '  from <input type="text" id="value-' + n + '" value="1" size="2" onkeyup="refesh()" />times';
-    html += '  to <input type="text" id="value2-' + n + '" value="2" size="2" onkeyup="refesh()" />times';
-    // html += ' <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
-    html += '  <button onclick="delMe(event, this.parentNode);" class="delButtons">X</button>';
-    return html;
-}
-
-function addCharClass(n) {
-    var html = '';
-    html += '  <input type="hidden" id="type-' + n + '" value="charClass" />';
-    html += '  (Not<input type="checkbox" id="value2-' + n + '" value="1" onchange="refesh()" />)';
-    html += '  one of theses char <input type="text" id="value-' + n + '" value="0123456789ABCDEF" onkeyup="refesh()" />';
-    // html += ' <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
-    html += '  <button onclick="delMe(event, this.parentNode);" class="delButtons">X</button>';
-    return html;
-}
-
-function addPredefinedClass(n) {
-    var html = '';
-    html += '  <input type="hidden" id="type-' + n + '" value="predefinedClass" />';
-    html += '  (Not<input type="checkbox" id="value2-' + n + '" value="1" onchange="refesh()" />)';
-    html += '  one char <select id="value-' + n + '" onchange="refesh()">';
-    for ( var val in predefinedClasses) {
-        var display = predefinedClasses[val];
-        html += '  <option value="' + val + '">' + display + '</option>';
-    }
-    html += '  </select>';
-    // html += ' <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
-    html += '  <button onclick="delMe(event, this.parentNode);" class="delButtons">X</button>';
-    return html;
-}
-
-function addCharRange(n) {
-    var html = '';
-    html += '  <input type="hidden" id="type-' + n + '" value="charRange" />';
-    html += '  from char <input type="text" id="value-' + n + '" value="a" size="2" onkeyup="refesh()" />';
-    html += '  to char <input type="text" id="value2-' + n + '" value="z" size="2" onkeyup="refesh()" />';
-    // html += ' <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
-    html += '  <button onclick="delMe(event, this.parentNode);" class="delButtons">X</button>';
-    return html;
-}
-
-function addOr(n) {
-    var html = '';
-    html += '  <input type="hidden" id="type-' + n + '" value="or" />';
-    html += '  OR ';
-    // html += ' <div onclick="showButtons(event, this.parentNode);" class="showButtons">+</div>';
-    html += '  <button onclick="delMe(event, this.parentNode);" class="delButtons">X</button>';
-    return html;
-}
-
-function addGroup(n) {
-    var html = '';
-    html += '  <input type="hidden" id="type-' + n + '" value="group" />';
-    html += '  Group (not<input type="checkbox" id="value-' + n + '" value="1" onchange="refesh()" /> capturing)';
-    html += '  <button onclick="delMe(event, this.parentNode);" class="delButtons">X</button>';
-    html += '  <button onclick="showButtons(event, gel(\'group-' + n + '\'));" class="showButtons">Add element</button>';
-    html += '  <div id="group-' + n + '" class="group"></div>';
-    return html;
-}
-
-function delMe(event, node) {
-    selectedNode = node;
-    del();
-}
-function del() {
-    selectedNode.parentNode.removeChild(selectedNode);
-    closeButtons();
-    refesh();
-}
 
 function refesh() {
     buildRegexp();
@@ -249,12 +117,11 @@ function testRegexp() {
     } catch (e) {
         gel('errMsg').innerHTML = 'Some thing is wrong in the regexp. Error message: ' + e.message;
     }
-
+    
 }
 
 function init() {
     selectedNode = gel('schema');
-    addGeneric(addText);
 }
 
 /***************** drag n drop *****************/
@@ -267,7 +134,7 @@ function drag(event) {
 
 /* events fired on the draggable target */
 document.addEventListener("drag", function(event) {
-
+    
 }, false);
 
 document.addEventListener("dragstart", function(event) {
@@ -296,7 +163,7 @@ document.addEventListener("dragenter", function(event) {
     if (event.target.parentNode.className == "group") {
         event.target.style.background = "chartreuse";
     }
-
+    
 }, false);
 
 document.addEventListener("dragleave", function(event) {
@@ -307,44 +174,46 @@ document.addEventListener("dragleave", function(event) {
     if (event.target.parentNode.className == "group") {
         event.target.style.background = "";
     }
-
+    
 }, false);
 
 document.addEventListener("drop", function(event) {
     // prevent default action (open as link for some elements)
     event.preventDefault();
-    if (event.target == dragged) {
-        event.target.style.background = "";
+    var source = dragged.parentNode;
+    var dest = event.target;
+    var elem = dragged;
+    dest.style.background = "";
+    
+    if (dest == elem) {
         // dragged in the same node
         return;
     }
+    
+    if ((dest.id == 'ressources') || (dest.parentNode.id == "ressources") || (dest.parentNode.parentNode.id == "ressources")) {
+        return;
+    }
+    
     // move dragged elem to the selected drop target
-    if (event.target.className == "group") {
-        event.target.style.background = "";
-        if (dragged.parentNode.id == 'pieces') {
-            var newNode = dragged.cloneNode(true);
+    if ((dest.className == "group") || (dest.parentNode.className == "group")) {
+        if (source.id == 'ressources') {
+            var newNode = elem.cloneNode(true);
             currentId++;
             newNode.innerHTML = newNode.innerHTML.replace(new RegExp('XXX', 'g'), String(currentId));
             newNode.id = newNode.id.replace('XXX', String(currentId));
-            for (var i = 0; i < newNode.getElementsByTagName('BUTTON').length; i++) {
-                var child = newNode.getElementsByTagName('BUTTON')[i];
-                child.disabled = false;
-            }
-            newNode.setAttribute("style","");
-            dragged = newNode;
+            newNode.setAttribute("style", "");
+            elem = newNode;
         } else {
-            dragged.parentNode.removeChild(dragged);
+            source.removeChild(elem);
         }
-        if (event.target.id != 'recycledBin') {
-            event.target.appendChild(dragged);
+        if (dest.id != 'recycledBin') {
+            if (dest.parentNode.className == "group") {
+                dest.parentNode.insertBefore(elem, dest);
+            } else {
+                dest.appendChild(elem);
+            }
         }
-        refesh();
-    } else if (event.target.parentNode.className == "group") {
-        event.target.style.background = "";
-        dragged.parentNode.removeChild(dragged);
-        event.target.parentNode.insertBefore(dragged, event.target);
-        // event.target.appendChild(dragged);
         refesh();
     }
-
+    
 }, false);
