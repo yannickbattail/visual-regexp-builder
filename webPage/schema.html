@@ -7,15 +7,17 @@
 <script type="text/javascript" src="htmlUtil.js"></script>
 <script type="text/javascript" src="schema.js"></script>
 </head>
-<body onclick="closeButtons()">
+<body>
 	<h1>building schema</h1>
 	<table id="design">
 		<tr>
-			<td>At begining of string <input type="checkbox" id="atStart"
-				value="1" onchange="refesh()" /> <br />
-				<div id="schema" class="group">schema</div> At end of string <input
-				type="checkbox" id="atEnd" value="1" onchange="refesh()" /> <br />
-				Options:
+			<td><input type="checkbox" id="atStart" value="1"
+				onchange="refesh()" /> At begining of string/line<br />
+				<fieldset class="mainGroup">
+					<legend> The schema </legend>
+					<div id="schema" class="group"></div>
+				</fieldset> <input type="checkbox" id="atEnd" value="1" onchange="refesh()" />
+				At end of string/line<br /> Options:
 				<ul>
 					<li><input type="checkbox" id="optG" value="1"
 						onchange="refesh()" />Global match (match several times)</li>
@@ -23,103 +25,134 @@
 						onchange="refesh()" />Ignore case</li>
 					<li><input type="checkbox" id="optM" value="1"
 						onchange="refesh()" />Working over multiple lines</li>
-				</ul>
+				</ul></td>
+			<td>
+				<fieldset class="mainGroup">
+					<legend>Recycled bin</legend>
+					<div id="recycledBin" class="group"></div>
+				</fieldset>
 			</td>
 			<td>
-				<div id="recycledBin" class="group">Recycled bin</div>
-			</td>
-			<td>
-				<div id="ressources" class="group">
-					Ressources (Drag and drop them in the schema)
-					<div id="node-XXX" class="node" ondragstart="drag(event)"
-						draggable="true">
-						<input type="hidden" id="type-XXX" value="text" /> Text <input
-							type="text" id="value-XXX" value="Hello" onkeyup="refesh()"
-							onfocus="this.parentNode.draggable=false"
-							onblur="this.parentNode.draggable=true" />
-					</div>
+				<fieldset class="mainGroup">
+					<legend>Ressources (Drag and drop them in the schema)</legend>
+					<div id="ressources" class="group">
+						<div id="node-XXX" class="node" ondragstart="drag(event)"
+							draggable="true">
+							<input type="hidden" id="type-XXX" value="text" /> Text <input
+								type="text" id="value-XXX" value="Hello" onkeyup="refesh()"
+								onfocus="this.parentNode.draggable=false"
+								onblur="this.parentNode.draggable=true" />
+							<button id="showQuantifier-XXX" onclick="showQuantifier(event)"
+								class="showQuantifier" disabled="disabled">+</button>
+							<div id="quantifier-XXX" class="quantifier">
+								from <input type="text" id="min-XXX" value="1" size="2"
+									onkeyup="refesh()" />times to <input type="text" id="max-XXX"
+									value="1" size="2" onkeyup="refesh()" />times
+							</div>
+						</div>
 
-					<div id="node-XXX" class="node" ondragstart="drag(event)"
-						draggable="true">
-						<input type="hidden" id="type-XXX" value="quantifier" /> from <input
-							type="text" id="value-XXX" value="1" size="2" onkeyup="refesh()" />times
-						to <input type="text" id="value2-XXX" value="2" size="2"
-							onkeyup="refesh()" />times
-					</div>
+						<div id="node-XXX" class="nodeClass" ondragstart="drag(event)"
+							draggable="true">
+							<input type="hidden" id="type-XXX" value="charClass" /> one of
+							theses char <input type="text" id="value-XXX" value="aeiouy"
+								onkeyup="refesh()" />
+						</div>
 
-					<div id="node-XXX" class="node" ondragstart="drag(event)"
-						draggable="true">
-						<input type="hidden" id="type-XXX" value="charClass" /> (Not<input
-							type="checkbox" id="value2-XXX" value="1" onchange="refesh()" />)
-						one of theses char <input type="text" id="value-XXX"
-							value="aeiouy" onkeyup="refesh()" />
-					</div>
+						<div id="node-XXX" class="nodeClass" ondragstart="drag(event)"
+							draggable="true">
+							<input type="hidden" id="type-XXX" value="predefinedClass" />
+							one char <select id="value-XXX" onchange="refesh()">
+								<option value="\d">digit</option>
+								<option value="\s">whitespace</option>
+								<option value="\w">word character</option>
+								<option value="\t">tab</option>
+								<option value="\n">new line</option>
+								<option value="\r">carriage return</option>
+								<option value="\f">form feed</option>
+								<option value="\b">backspace</option>
+								<option value="a-z">alpha lower case</option>
+								<option value="A-Z">alpha upper case</option>
+								<option value="a-zA-Z">alpha upper and lower</option>
+								<option value="a-zA-Z0-9">alphanum</option>
+								<option value="a-f0-9">hexadecimal lowercase</option>
+								<option value="A-F0-9">hexadecimal uppercase</option>
+								<option value="a-fA-F0-9">hexa upper and lower</option>
+							</select>
+						</div>
 
-					<div id="node-XXX" class="node" ondragstart="drag(event)"
-						draggable="true">
-						<input type="hidden" id="type-XXX" value="predefinedClass" />
-						(Not<input type="checkbox" id="value2-XXX" value="1"
-							onchange="refesh()" />) one char <select id="value-XXX"
-							onchange="refesh()">
-							<option value="\d">digit</option>
-							<option value="\s">whitespace</option>
-							<option value="\w">word character</option>
-							<option value="\t">tab</option>
-							<option value="\n">new line</option>
-							<option value="\r">carriage return</option>
-							<option value="\f">form feed</option>
-							<option value="\b">backspace</option>
-							<option value="a-z">alpha lower case</option>
-							<option value="A-Z">alpha upper case</option>
-							<option value="a-zA-Z">alpha upper and lower</option>
-							<option value="a-zA-Z0-9">alphanum</option>
-							<option value="a-f0-9">hexadecimal lowercase</option>
-							<option value="A-F0-9">hexadecimal uppercase</option>
-							<option value="a-fA-F0-9">hexa upper and lower</option>
-						</select>
-					</div>
+						<div id="node-XXX" class="nodeClass" ondragstart="drag(event)"
+							draggable="true">
+							<input type="hidden" id="type-XXX" value="charRange" /> from
+							char <input type="text" id="value-XXX" value="a" size="2"
+								onkeyup="refesh()" /> to char <input type="text"
+								id="value2-XXX" value="z" size="2" onkeyup="refesh()" />
+						</div>
 
-					<div id="node-XXX" class="node" ondragstart="drag(event)"
-						draggable="true">
-						<input type="hidden" id="type-XXX" value="charRange" /> from char
-						<input type="text" id="value-XXX" value="a" size="2"
-							onkeyup="refesh()" /> to char <input type="text" id="value2-XXX"
-							value="z" size="2" onkeyup="refesh()" />
-					</div>
+						<div id="node-XXX" class="node" ondragstart="drag(event)"
+							draggable="true">
+							<input type="hidden" id="type-XXX" value="class" /> (Not<input
+								type="checkbox" id="value-XXX" value="1" onchange="refesh()" />)
+							one char of this list
+							<button id="showQuantifier-XXX" onclick="showQuantifier(event)"
+								class="showQuantifier" disabled="disabled">+</button>
+							<div id="quantifier-XXX" class="quantifier">
+								from <input type="text" id="min-XXX" value="1" size="2"
+									onkeyup="refesh()" />times to <input type="text" id="max-XXX"
+									value="1" size="2" onkeyup="refesh()" />times
+							</div>
+							<div id="group-XXX" class="groupClass"></div>
+						</div>
 
-					<div id="node-XXX" class="node" ondragstart="drag(event)"
-						draggable="true">
-						<input type="hidden" id="type-XXX" value="or" /> OR
-					</div>
+						<div id="node-XXX" class="node" ondragstart="drag(event)"
+							draggable="true">
+							<div id="group-XXX" class="group"></div>
+							<input type="hidden" id="type-XXX" value="or" /> OR
+							<div id="group2-XXX" class="group"></div>
+						</div>
 
-					<div id="node-XXX" class="node" ondragstart="drag(event)"
-						draggable="true">
-						<input type="hidden" id="type-XXX" value="group" /> Group (not<input
-							type="checkbox" id="value-XXX" value="1" onchange="refesh()" />
-						capturing)
-						<div id="group-XXX" class="group"></div>
+						<div id="node-XXX" class="node" ondragstart="drag(event)"
+							draggable="true">
+							<input type="hidden" id="type-XXX" value="group" /> Group (not<input
+								type="checkbox" id="value-XXX" value="1" onchange="refesh()" />
+							capturing)
+							<button id="showQuantifier-XXX" onclick="showQuantifier(event)"
+								class="showQuantifier" disabled="disabled">+</button>
+							<div id="quantifier-XXX" class="quantifier">
+								from <input type="text" id="min-XXX" value="1" size="2"
+									onkeyup="refesh()" />times to <input type="text" id="max-XXX"
+									value="1" size="2" onkeyup="refesh()" />times
+							</div>
+							<div id="group-XXX" class="group"></div>
+						</div>
 					</div>
-				</div>
+				</fieldset>
 			</td>
 		</tr>
 	</table>
-	<label>The regexp: <input type="text" id="regexp" value=""
-		readonly="readonly" /></label>
+	<fieldset>
+		<legend> The regexp </legend>
+		<input type="text" id="regexp" value="" readonly="readonly" />
+	</fieldset>
 	<hr />
 	<table>
 		<tr>
-			<th><label for="test">Test string: </label></th>
-			<td><textarea id="test" onkeyup="testRegexp()"></textarea></td>
+			<td>
+				<fieldset>
+					<legend> Test string </legend>
+					<textarea id="test" onkeyup="testRegexp()"></textarea>
+				</fieldset>
+			</td>
 		</tr>
 		<tr>
-			<th>
-				<!-- <button onclick="testRegexp()">Test</button> -->
-			</th>
 			<td><div id="errMsg"></div></td>
 		</tr>
 		<tr>
-			<th><label for="result">Result: </label></th>
-			<td><textarea id="result"></textarea></td>
+			<td>
+				<fieldset>
+					<legend> Result </legend>
+					<textarea id="result" onkeyup="testRegexp()"></textarea>
+				</fieldset>
+			</td>
 		</tr>
 	</table>
 </body>
