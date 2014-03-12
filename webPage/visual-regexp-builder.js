@@ -1,30 +1,4 @@
-/********************************************************************
-  APG - an ABNF Parser Generator
-  Copyright (C) 2009 Coast to Coast Research, Inc.
-
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see
-  <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>
-  or write to the Free Software Foundation, Inc.,
-  51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
-      author: Lowell Thomas
-              lowell@coasttocoastresearch.com
-              http://www.coasttocoastresearch.com
-
-*********************************************************************/
 /**
-
 HTML Requirements:
   A web page (or pages) capable of:
    - capturing the input string to be parsed
@@ -200,53 +174,39 @@ function SyntaxCallbacks(ruleIds) {
 // e.g. chars[phraseIndex] is the first character code of the phrase
 // phraseCount - the number of characters in the matched phrase
 // data - user-defined data, specified in parser call to "semanticAnalysis()"
-function semIniFile(state, chars, phraseIndex, phraseCount, data) {
+function semGeneric(state, chars, phraseIndex, phraseCount, data, ruleName) {
     var ret = APG_SEM_OK;
     if (state == APG_PRE) {
-        // initialize for a new ini file
-        data.total = 0;
-        data.sectionName = '';
-    } else if (state == APG_POST) {
-        // convert the total cents to dollars
-        data.total = data.total / 100;
-    }
-    return ret;
-}
-function semSectionName(state, chars, phraseIndex, phraseCount, data) {
-    var ret = APG_SEM_OK;
-    if (state == APG_POST) {
-        // convert the section name characters to a string
-        var name = charsToString(chars, phraseIndex, phraseCount);
-        data.sectionName = name.toLowerCase();
-    }
-    return ret;
-}
-function semValue(state, chars, phraseIndex, phraseCount, data) {
-    var ret = APG_SEM_OK;
-    if (state == APG_POST) {
-        if (data.sectionName == 'dollars' || data.sectionName == 'cents') {
-            // get the integer value
-            var value = 0;
-            for (var i = 0; i < phraseCount; i += 1) {
-                thisChar = chars[phraseIndex + i];
-                if (thisChar < 48 || thisChar > 57) {
-                    // log a value format error
-                    var stringValue = charsToString(chars, phraseIndex, phraseCount);
-                    data.log.logMsg('non-integer value found: section: [' + data.sectionName + '] value: ' + stringValue);
-                    value = false;
-                    break;
-                }
-                value = (value * 10) + (thisChar - 48);
-            }
-            if (value !== false) {
-                if (data.sectionName == 'dollars') {
-                    data.total += value * 100;
-                } else {
-                    data.total += value;
-                }
+        data.xmlTree += '<' + ruleName + '>'/* + '\r\n' */;
+        if (ruleName === 'regexpquantifier') {
+            var char1 = charsToString(chars, phraseIndex, 1);
+            if (char1 !== '{') {
+                data.xmlTree += char1/* + '\r\n' */;
             }
         }
-        // ignore any other sections
+    }
+    if (state == APG_POST) {
+        data.xmlTree += '</' + ruleName + '>'/* + '\r\n' */;
+    }
+    return ret;
+}
+
+function semGenericSingle(state, chars, phraseIndex, phraseCount, data, ruleName) {
+    var ret = APG_SEM_OK;
+    if (state == APG_POST) {
+        data.xmlTree += '<' + ruleName + ' />'/* + '\r\n' */;
+    }
+    return ret;
+}
+
+function semGenericContent(state, chars, phraseIndex, phraseCount, data, ruleName) {
+    var ret = APG_SEM_OK;
+    if (state == APG_PRE) {
+        data.xmlTree += '<' + ruleName + '>'/* + '\r\n' */;
+    }
+    if (state == APG_POST) {
+        data.xmlTree += escapeHtml(charsToString(chars, phraseIndex, phraseCount))/* + '\r\n' */;
+        data.xmlTree += '</' + ruleName + '>'/* + '\r\n' */;
     }
     return ret;
 }
@@ -260,9 +220,70 @@ function SemCallbacks(log, ruleIds) {
         for (var i = 0; i < ruleID.length; i += 1) {
             semList[i] = false;
         }
-        semList[ruleID["inifile"]] = semIniFile;
-        semList[ruleID["sectionname"]] = semSectionName;
-        semList[ruleID["value"]] = semValue;
+        
+        semList[ruleID["regexpliteral"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpliteral");
+        };
+        semList[ruleID["regexpatstart"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericSingle(state, chars, phraseIndex, phraseCount, data, "regexpatstart");
+        };
+        semList[ruleID["regexpatend"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericSingle(state, chars, phraseIndex, phraseCount, data, "regexpatend");
+        };
+        semList[ruleID["regexpoptions"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "regexpoptions");
+        };
+        semList[ruleID["regexpgroupcapture"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "regexpgroupcapture");
+        };
+        semList[ruleID["regexpclassnegative"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericSingle(state, chars, phraseIndex, phraseCount, data, "regexpclassnegative");
+        };
+        // semList[ruleID["regexpchoice"]] = function(state, chars, phraseIndex, phraseCount, data) {
+        // return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpchoice");
+        // };
+        semList[ruleID["regexpsequence"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpsequence");
+        };
+        semList[ruleID["regexpalternative"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericSingle(state, chars, phraseIndex, phraseCount, data, "regexpalternative");
+        };
+        // semList[ruleID["regexpfactor"]] = function(state, chars, phraseIndex, phraseCount, data) {
+        // return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpfactor");
+        // };
+        semList[ruleID["regexpgroup"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpgroup");
+        };
+        semList[ruleID["regexpclass"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpclass");
+        };
+        semList[ruleID["regexpcharrange"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpcharrange");
+        };
+        semList[ruleID["regexpcharstart"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "regexpcharstart");
+        };
+        semList[ruleID["regexpcharend"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "regexpcharend");
+        };
+        semList[ruleID["regexpquantifier"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpquantifier");
+        };
+        semList[ruleID["regexpquantifierrange"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpquantifierrange");
+        };
+        semList[ruleID["regexpclassword"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "regexpclassword");
+        };
+        semList[ruleID["regexpfactorword"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "regexpfactorword");
+        };
+        semList[ruleID["min"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "min");
+        };
+        semList[ruleID["max"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "max");
+        };
     };
     
     // semList - a complete array of call back function pointers
@@ -277,24 +298,193 @@ function SemCallbacks(log, ruleIds) {
         }
     };
     
+    this.xmlTree = "";
     this.log = log;
-    this.sectionName = '';
-    this.total = 0;
     this.astList = [];
     this.semList = [];
     this.callbackList(ruleIds, this.semList);
     this.astNodeList(this.semList, this.astList);
 }
 
+var xmlToJson = {};
+
+/**
+ * 
+ * @param {Node} rootNode
+ * @returns {Object}
+ */
+xmlToJson.parse = function(rootNode) {
+    return xmlToJson.regexpliteral(rootNode.firstChild);
+};
+
+xmlToJson.regexpliteral = function(rootNode) {
+    var ret = {};
+    ret.type = "literal";
+    ret.global = false;
+    ret.insensitive = false;
+    ret.multiline = false;
+    ret.atStart = false;
+    ret.atEnd = false;
+    ret.group = [];
+    for (var i = 0; i < rootNode.childNodes.length; i++) {
+        var node = rootNode.childNodes[i];
+        if (node.nodeName == "regexpatstart") {
+            ret.atStart = true;
+        } else if (node.nodeName == "regexpatend") {
+            ret.atEnd = true;
+        } else if ((node.nodeName == "regexpoptions") && (node.firstChild)) {
+            if (node.firstChild.nodeValue.indexOf('g') !== -1) {
+                ret.global = true;
+            }
+            if (node.firstChild.nodeValue.indexOf('i') !== -1) {
+                ret.insensitive = true;
+            }
+            if (node.firstChild.nodeValue.indexOf('m') !== -1) {
+                ret.multiline = true;
+            }
+        } else if (node.nodeName == "regexpalternative") {
+            ret.group.push({
+                "type": "alternative"
+            });
+        } else if (node.nodeName == "regexpsequence") {
+            ret.group = ret.group.concat(xmlToJson.regexpsequence(node));
+        }
+    }
+    return ret;
+};
+
+xmlToJson.regexpsequence = function(rootNode) {
+    var tab = [];
+    var lastItem = null;
+    for (var i = 0; i < rootNode.childNodes.length; i++) {
+        var node = rootNode.childNodes[i];
+        if (node.nodeName == "regexpclass") {
+            lastItem = xmlToJson.regexpclass(node);
+            tab.push(lastItem);
+        } else if (node.nodeName == "regexpgroup") {
+            lastItem = xmlToJson.regexpgroup(node);
+            tab.push(lastItem);
+        } else if (node.nodeName == "regexpfactorword") {
+            lastItem = {
+                "type": "word",
+                "value": node.firstChild.nodeValue
+            };
+            tab.push(lastItem);
+        } else if (node.nodeName == "regexpquantifier") {
+            if (lastItem) {
+                lastItem.min = "1";
+                lastItem.max = "1";
+                if (node.firstChild.nodeType == Node.TEXT_NODE) {
+                    if (node.firstChild.nodeValue.trim() === '?') {
+                        lastItem.min = "0";
+                        lastItem.max = "1";
+                    } else if (node.firstChild.nodeValue.trim() === '+') {
+                        lastItem.min = "1";
+                        lastItem.max = "";
+                    } else if (node.firstChild.nodeValue.trim() === '*') {
+                        lastItem.min = "0";
+                        lastItem.max = "";
+                    }
+                } else {
+                    var n = node.getElementsByTagName('min');
+                    if (n && n[0]) {
+                        lastItem.min = n[0].firstChild.nodeValue.trim();
+                        n = node.getElementsByTagName('max');
+                        if (n && n[0]) {
+                            lastItem.max = n[0].firstChild.nodeValue.trim();
+                        } else {
+                            lastItem.max = lastItem.min;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return tab;
+};
+
+xmlToJson.regexpclass = function(rootNode) {
+    var ret = {};
+    ret.type = "class";
+    ret.negative = false;
+    ret.group = [];
+    for (var i = 0; i < rootNode.childNodes.length; i++) {
+        var node = rootNode.childNodes[i];
+        if (node.nodeName == "regexpclassnegative") {
+            ret.negative = true;
+        } else if (node.nodeName == "regexpcharrange") {
+            var lastItem = {};
+            lastItem.type = "range";
+            var n = node.getElementsByTagName('regexpcharstart');
+            if (n && n[0]) {
+                lastItem.first = n[0].firstChild.nodeValue.trim();
+            }
+            n = node.getElementsByTagName('regexpcharend');
+            if (n && n[0]) {
+                lastItem.last = n[0].firstChild.nodeValue.trim();
+            }
+            ret.group.push(lastItem);
+        } else if (node.nodeName == "regexpclassword") {
+            ret.group.push({
+                "type": "char",
+                "value": node.firstChild.nodeValue
+            });
+        }
+    }
+    return ret;
+};
+
+xmlToJson.regexpgroup = function(rootNode) {
+    var ret = {};
+    ret.type = "group";
+    ret.capture = "yes";
+    ret.group = [];
+    for (var i = 0; i < rootNode.childNodes.length; i++) {
+        var node = rootNode.childNodes[i];
+        //
+        if (node.nodeName == "regexpgroupcapture") {
+            if (node.firstChild.nodeValue.trim() === '?:') {
+                ret.capture = "no";
+            } else if (node.firstChild.nodeValue.trim() === '?=') {
+                ret.capture = "+lookAhead";
+            } else if (node.firstChild.nodeValue.trim() === '?!') {
+                ret.capture = "-lookAhead";
+            }
+        } else if (node.nodeName == "regexpalternative") {
+            ret.group.push({
+                "type": "alternative"
+            });
+        } else if (node.nodeName == "regexpsequence") {
+            ret.group = ret.group.concat(xmlToJson.regexpsequence(node));
+        }
+    }
+    return ret;
+};
+
+var entityMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': '&quot;',
+    "'": '&#39;',
+    "/": '&#x2F;'
+};
+
+function escapeHtml(string) {
+    return String(string).replace(/[&<>"'\/]/g, function(s) {
+        return entityMap[s];
+    });
+}
+
 // /////////////////////////////////////////////////////////////////////////////
 // 5. driver "main" program
 // /////////////////////////////////////////////////////////////////////////////
-function main() {
+function regexpToStructure(regexp) {
     // clear the output string
     var html = '';
     
     // initialize the APG-generated opcodes
-    var parserOpcodes = new regexpParser();
+    var parserOpcodes = new ABNFOpcodes();
     
     // initialize the parser
     var parser = new ApgLib(parserOpcodes.stringTable, parserOpcodes.rules, parserOpcodes.opcodes);
@@ -312,9 +502,8 @@ function main() {
     parser.syntaxInit(synCallbacks.synList);
     
     // get and preprocess the input string
-    var input = window.document.getElementById('input-string').value;
     var stringChars = [];
-    grammarToChars(log, input, stringChars);
+    grammarToChars(log, regexp, stringChars);
     
     // NOTE: Some browsers will add line ending characters to the textarea content.
     // If in doubt, you can check it by un-commenting the following lines:
@@ -350,38 +539,28 @@ function main() {
     // parse the string
     synCallbacks.init(stringChars, log);
     var test = parser.syntaxAnalysis(0, stringChars, synCallbacks);
+    var structure = {};
     
-    // single point of exit loop
-    while (true) {
-        if (log.count() !== 0) {
-            html += log.logDisplay('syntaxAnalysis analysis errors encountered');
-            break;
-        }
-        if (!test) {
-            html += '<br /><br />parser: syntaxAnalysis analysis errors of unknown type encountered';
-            break;
-        }
-        
-        // translate the string - semantic analysis
-        parser.semanticAnalysis(semCallbacks);
-        if (log.count() !== 0) {
-            html += log.logDisplay('semanticAnalysis analysis errors encountered');
-            break;
-        }
-        
-        // success
-        html += '<h4>Parser Translation:</h4>';
-        html += 'total dollars and cents: $' + semCallbacks.total;
-        break;
+    if (log.count() !== 0) {
+        html += log.logDisplay('syntaxAnalysis analysis errors encountered');
+        return null;
+    }
+    if (!test) {
+        html += 'There is an error in your regular expression.';
+        return null;
     }
     
-    html += '<h4>Parser State:</h4>';
-    html += parser.stateDisplay(); // display the parser state
-    html += '<h4>Parser Statistics:</h4>';
-    html += parser.stats.display(); // display the parser statistics
-    html += '<h4>Parser Trace:</h4>';
-    html += parserTrace.display(); // display the parser trace
-    // print the accumulated output
-    window.document.getElementById('parser-output').innerHTML = html;
-    alert(ast.dump('regepliteral', stringChars));
+    // translate the string - semantic analysis
+    parser.semanticAnalysis(semCallbacks);
+    if (log.count() !== 0) {
+        html += log.logDisplay('semanticAnalysis analysis errors encountered');
+        return null;
+    }
+    
+    var oParser = new DOMParser();
+    var oDOM = oParser.parseFromString(semCallbacks.xmlTree, "text/xml");
+    
+    structure = xmlToJson.parse(oDOM);
+    
+    return structure;
 }

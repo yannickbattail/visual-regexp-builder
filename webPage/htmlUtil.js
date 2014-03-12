@@ -13,48 +13,52 @@ function escapeHtml(string) {
     });
 }
 
-function gel(id) {
-    return document.getElementById(id);
+function gel(id, node) {
+    if (node) {
+        return node.querySelector("[id='" + id + "']");
+    } else {
+        return document.getElementById(id);
+    }
 }
 
-function getSel(id) {
-    var e = gel(id);
+function getSel(id, node) {
+    var e = gel(id, node);
     return e.options[e.selectedIndex].value;
 }
 
-function getValue(id) {
-    var e = gel(id);
+function getValue(id, node) {
+    var e = gel(id, node);
     if (e.tagName == 'SELECT') {
         return getSel(id);
     } else if (e.tagName == 'INPUT') {
         if (e.type == 'checkbox') {
-            return gel(id).checked;
+            return e.checked;
         } else {
-            return gel(id).value;
+            return e.value;
         }
     }
     throw "unknown field type " + e.tagName;
 }
 
-function setValue(id, value) {
-    var e = gel(id);
+function setValue(id, value, node) {
+    var e = gel(id, node);
     if (e.tagName == 'SELECT') {
-        return setSel(id, value);
+        return setSel(id, value, node);
     } else if (e.tagName == 'INPUT') {
         if (e.type == 'checkbox') {
-            return gel(id).checked = value ? true : false;
+            return e.checked = value ? true : false;
         } else {
-            return gel(id).value = value;
+            return e.value = value;
         }
     }
     throw "unknown field type" + e.tagName;
 }
 
-function setSel(id, value) {
-    var sel = gel(id);
-    for (var i, j = 0; i = sel.options[j]; j++) {
+function setSel(id, value, node) {
+    var e = gel(id, node);
+    for (var i, j = 0; i = e.options[j]; j++) {
         if (i.value == value) {
-            sel.selectedIndex = j;
+            e.selectedIndex = j;
             break;
         }
     }

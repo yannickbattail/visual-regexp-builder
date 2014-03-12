@@ -1,0 +1,46 @@
+regexpliteral = "/" [ regexpatstart ] regexpsequence *( regexpalternative regexpsequence ) [ regexpatend ] "/" regexpoptions
+;regexpliteral = "/" [ regexpatstart ] regexpchoice [ regexpatend ] "/" regexpoptions
+regexpatstart = "^"
+regexpatend = "$"
+regexpoptions = 0*3( "g" / "i" / "m" )
+;regexpchoice = regexpsequence *( regexpalternative regexpsequence )
+regexpalternative = "|"
+regexpsequence = 1*( (regexpclass / regexpgroup / regexpfactorword) [ regexpquantifier ] )
+;regexpsequence = 1*( regexpfactor [ regexpquantifier ] )
+;regexpfactor = regexpclass / regexpgroup / regexpfactorword
+regexpfactorword = 1*( charfactor / regexpescape )
+regexpgroup = "(" [ regexpgroupcapture ] regexpsequence *( regexpalternative regexpsequence ) ")"
+;regexpgroup = "(" [ regexpgroupcapture ] regexpchoice ")"
+regexpgroupcapture = "?" [ ":" / "=" / "!" ]
+regexpclass = "[" [ regexpclassnegative ] 1*( regexpcharrange / regexpclassword ) "]"
+regexpclassnegative = "^"
+regexpcharrange = regexpcharstart "-" regexpcharend
+regexpcharstart = charclass / regexpclassescape
+regexpcharend = charclass / regexpclassescape
+regexpclassword = charclass / regexpclassescape
+regexpquantifier = ( "?" / "*" / "+" / regexpquantifierrange ) [ "?" ]
+regexpquantifierrange = "{" min [ "," [ max ] ] "}"
+
+regexpclassescape = "\" (
+     "b" / "f" / "n" / "r" / "t" /
+     ( "u" HEXDIG HEXDIG HEXDIG HEXDIG) /
+     "D" / "S" / "W" /
+     "d" / "s" / "w" /
+     charspecial / DIGIT )
+regexpescape = "\" (
+     "f" / "n" / "r" / "t" /
+     ( "u" HEXDIG HEXDIG HEXDIG HEXDIG) /
+     "B" / "D" / "S" / "W" /
+     "b" / "d" / "s" / "w" /
+     charspecialfactor / DIGIT )
+charfactor =  ALPHA / DIGIT / "#" / "%" / "&" / "!" / "'" / "," / "-" / ":" / ";" / "<" / "=" / ">" / "@" / "_" / "`" / "~" / "." ; not /\[]{}()?+*|.^$
+charclass = ALPHA / DIGIT / "{" / "}" / "(" / ")" / "." / "$" / "+" / "*" / "?" / "|" / "#" / "%" / "&" / "!" / "'" / "," / ":" / ";" / "<" / "=" / ">" / "@" / "_" / "`" / "~" ; not /\[]^-
+charspecialfactor =  "[" / "\" / "]" / "^" / "/" / "{" / "}" / "(" / ")" / "?" / "+" / "*" / "|" / "." /"^" / "$" / " "
+charspecial =  "-" / "[" / "\" / "]" / "^" / " "
+
+min = 1*DIGIT
+max = 1*DIGIT
+
+HEXDIG = DIGIT / %x61-65 / %x41-45
+DIGIT = %x30-39
+ALPHA = %x41-5A / %x61-7A

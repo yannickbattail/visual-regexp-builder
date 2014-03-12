@@ -36,7 +36,7 @@
 	background-color: grey;
 }
 
-.node {
+.item {
 	display: block;
 }
 
@@ -45,8 +45,8 @@
 }
 
 .quantifier {
-	/*display: inline;*/
-	display: none;
+	display: inline;
+	/*display: none;*/
 }
 
 #schema {

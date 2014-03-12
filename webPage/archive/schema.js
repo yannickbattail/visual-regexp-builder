@@ -55,10 +55,10 @@ function duplicateItem(oldNode) {
 function showQuantifier(event) {
     var n = getItemNum(event.target);
     var quantifier = gel('quantifier-' + n);
-    if (quantifier.style.display == 'none') {
-        quantifier.style.display = 'inline';
-    } else {
+    if (quantifier.style.display == 'inline') {
         quantifier.style.display = 'none';
+    } else {
+        quantifier.style.display = 'inline';
     }
 }
 
@@ -69,9 +69,9 @@ function loadExampleList() {
 }
 
 function loadExample(i) {
-    setValue('regexp', regexpExamples[i].regexp);
+    structureToSchema(regexpExamples[i].structure);
     gel('test').value = regexpExamples[i].tests[0];
-    typeRegexp();
+    refresh();
 }
 
 function init() {
@@ -87,20 +87,6 @@ function refresh() {
     testRegexp();
 }
 
-function typeRegexp() {
-    var regexp = getValue('regexp');
-    var structure = regexpToStructure(regexp);
-    if (!structure) {
-        gel('regexp').style.backgroundColor = 'pink';
-        gel('errMsg').innerHTML = 'There is an error in your regular expression.';
-    } else {
-        gel('regexp').style.backgroundColor = 'lightgreen';
-        gel('errMsg').innerHTML = '';
-        structureToSchema(structure);
-        testRegexp();
-    }
-}
-
 function testRegexp() {
     try {
         var theRegexp = eval(gel('regexp').value);
@@ -110,7 +96,7 @@ function testRegexp() {
             gel('result').value = '';
         } else {
             // gel('result').value = res.join('\n');
-            gel('result').value = JSON.stringify(res, null, 4);
+            gel('result').value = JSON.stringify(res);
             gel('errMsg').innerHTML = '';
         }
         gel('regexp').className = 'regexpOk';
@@ -391,19 +377,11 @@ document.addEventListener("dragenter", function(event) {
     // move dragged elem to the selected drop target
     if (isValidMove(source, dest, elem)) {
         if (dest.style) {
-            if (dest.id == 'recycledBin') {
-                dest.className = "group recycledBinFull";
-            } else {
-                dest.style.background = "chartreuse";
-            }
+            dest.style.background = "chartreuse";
         }
     } else {
         if (dest.style) {
-            if (dest.id == 'recycledBin') {
-                dest.className = "group";
-            } else {
-                dest.style.background = "red";
-            }
+            dest.style.background = "red";
         }
     }
 }, false);
@@ -414,11 +392,7 @@ document.addEventListener("dragleave", function(event) {
     var dest = event.target;
     // var elem = dragged;
     if (dest.style) {
-        if (dest.id == 'recycledBin') {
-            dest.className = "group";
-        } else {
-            dest.style.background = "";
-        }
+        dest.style.background = "";
     }
     
 }, false);
@@ -430,11 +404,7 @@ document.addEventListener("drop", function(event) {
     var dest = event.target;
     var elem = dragged;
     if (dest.style) {
-        if (dest.id == 'recycledBin') {
-            dest.className = "group";
-        } else {
-            dest.style.background = "";
-        }
+        dest.style.background = "";
     }
     // move dragged elem to the selected drop target
     if (isValidMove(source, dest, elem)) {

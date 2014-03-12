@@ -4,64 +4,72 @@
 <title>Visual RegExp builder</title>
 <link rel="stylesheet" type="text/css" href="schema_custom.css" />
 <link rel="stylesheet" type="text/css" href="schema_mandatory.css" />
+<script type="text/javascript" src="json2.js"></script>
 <script type="text/javascript" src="htmlUtil.js"></script>
 <script type="text/javascript" src="schema.js"></script>
+<script type="text/javascript" src="examples.js"></script>
 </head>
 <body>
 	<h1>building schema</h1>
 	<table id="design">
 		<tr>
 			<td><input type="checkbox" id="atStart" value="1"
-				onchange="refesh()" /> At begining of string/line<br />
+				onchange="refresh()" /> At begining of string/line<br />
 				<fieldset class="mainGroup">
 					<legend> The schema </legend>
 					<div id="schema" class="group"></div>
-				</fieldset> <input type="checkbox" id="atEnd" value="1" onchange="refesh()" />
+				</fieldset> <input type="checkbox" id="atEnd" value="1" onchange="refresh()" />
 				At end of string/line<br /> Options:
 				<ul>
-					<li><input type="checkbox" id="optG" value="1"
-						onchange="refesh()" />Global match (match several times)</li>
-					<li><input type="checkbox" id="optI" value="1"
-						onchange="refesh()" />Ignore case</li>
-					<li><input type="checkbox" id="optM" value="1"
-						onchange="refesh()" />Working over multiple lines</li>
+					<li><input type="checkbox" id="global" value="1"
+						onchange="refresh()" />Global match (match several times)</li>
+					<li><input type="checkbox" id="insensitive" value="1"
+						onchange="refresh()" />Ignore case</li>
+					<li><input type="checkbox" id="multiline" value="1"
+						onchange="refresh()" />Working over multiple lines</li>
 				</ul></td>
 			<td>
 				<fieldset class="mainGroup">
 					<legend>Recycled bin</legend>
 					<div id="recycledBin" class="group"></div>
 				</fieldset>
+				<fieldset>
+					<legend>Saved regexp</legend>
+					<select id="saved_regexp"
+						onchange="loadExample(this.selectedIndex)" size="5">
+					</select>
+				</fieldset>
 			</td>
 			<td>
 				<fieldset class="mainGroup">
 					<legend>Ressources (Drag and drop them in the schema)</legend>
 					<div id="ressources" class="group">
-						<div id="node-XXX" class="node" ondragstart="drag(event)"
+						<div id="item-XXX" class="item" ondragstart="drag(event)"
 							draggable="true">
-							<input type="hidden" id="type-XXX" value="text" /> Text <input
-								type="text" id="value-XXX" value="Hello" onkeyup="refesh()"
+							<input type="hidden" id="type-XXX" value="word" /> Word <input
+								type="text" id="value-XXX" value="Hello" onkeyup="refresh()"
 								onfocus="this.parentNode.draggable=false"
 								onblur="this.parentNode.draggable=true" />
 							<button id="showQuantifier-XXX" onclick="showQuantifier(event)"
 								class="showQuantifier" disabled="disabled">+</button>
 							<div id="quantifier-XXX" class="quantifier">
 								from <input type="text" id="min-XXX" value="1" size="2"
-									onkeyup="refesh()" />times to <input type="text" id="max-XXX"
-									value="1" size="2" onkeyup="refesh()" />times
+									onkeyup="refresh()" />times to <input type="text" id="max-XXX"
+									value="1" size="2" onkeyup="refresh()" />times
 							</div>
 						</div>
 
-						<div id="node-XXX" class="nodeClass" ondragstart="drag(event)"
+						<div id="item-XXX" class="itemClass" ondragstart="drag(event)"
 							draggable="true">
-							<input type="hidden" id="type-XXX" value="charClass" /> one of
-							theses char <input type="text" id="value-XXX" value="aeiouy"
-								onkeyup="refesh()" />
+							<input type="hidden" id="type-XXX" value="char" /> one of theses
+							char <input type="text" id="value-XXX" value="aeiouy"
+								onkeyup="refresh()" />
 						</div>
 
-						<div id="node-XXX" class="nodeClass" ondragstart="drag(event)"
+						<div id="item-XXX" class="itemClass" ondragstart="drag(event)"
 							draggable="true">
 							<input type="hidden" id="type-XXX" value="predefinedClass" />
-							one char <select id="value-XXX" onchange="refesh()">
+							one char <select id="value-XXX" onchange="refresh()">
 								<option value="\d">digit</option>
 								<option value="\s">whitespace</option>
 								<option value="\w">word character</option>
@@ -80,47 +88,56 @@
 							</select>
 						</div>
 
-						<div id="node-XXX" class="nodeClass" ondragstart="drag(event)"
+						<div id="item-XXX" class="itemClass" ondragstart="drag(event)"
 							draggable="true">
-							<input type="hidden" id="type-XXX" value="charRange" /> from
-							char <input type="text" id="value-XXX" value="a" size="2"
-								onkeyup="refesh()" /> to char <input type="text"
-								id="value2-XXX" value="z" size="2" onkeyup="refesh()" />
+							<input type="hidden" id="type-XXX" value="range" /> from char <input
+								type="text" id="first-XXX" value="a" size="2"
+								onkeyup="refresh()" /> to char <input type="text" id="last-XXX"
+								value="z" size="2" onkeyup="refresh()" />
 						</div>
 
-						<div id="node-XXX" class="node" ondragstart="drag(event)"
+						<div id="item-XXX" class="item" ondragstart="drag(event)"
 							draggable="true">
 							<input type="hidden" id="type-XXX" value="class" /> (Not<input
-								type="checkbox" id="value-XXX" value="1" onchange="refesh()" />)
+								type="checkbox" id="negative-XXX" value="1" onchange="refresh()" />)
 							one char of this list
 							<button id="showQuantifier-XXX" onclick="showQuantifier(event)"
 								class="showQuantifier" disabled="disabled">+</button>
 							<div id="quantifier-XXX" class="quantifier">
 								from <input type="text" id="min-XXX" value="1" size="2"
-									onkeyup="refesh()" />times to <input type="text" id="max-XXX"
-									value="1" size="2" onkeyup="refesh()" />times
+									onkeyup="refresh()" />times to <input type="text" id="max-XXX"
+									value="1" size="2" onkeyup="refresh()" />times
 							</div>
 							<div id="group-XXX" class="groupClass"></div>
 						</div>
 
-						<div id="node-XXX" class="node" ondragstart="drag(event)"
-							draggable="true">
+						<div id="item-XXX" class="item" ondragstart="drag(event)"
+							draggable="true" style="display: none;">
 							<div id="group-XXX" class="group"></div>
 							<input type="hidden" id="type-XXX" value="or" /> OR
 							<div id="group2-XXX" class="group"></div>
 						</div>
 
-						<div id="node-XXX" class="node" ondragstart="drag(event)"
+						<div id="item-XXX" class="item" ondragstart="drag(event)"
 							draggable="true">
-							<input type="hidden" id="type-XXX" value="group" /> Group (not<input
-								type="checkbox" id="value-XXX" value="1" onchange="refesh()" />
-							capturing)
+							<input type="hidden" id="type-XXX" value="alternative" /> OR
+						</div>
+
+						<div id="item-XXX" class="item" ondragstart="drag(event)"
+							draggable="true">
+							<input type="hidden" id="type-XXX" value="group" /> Group
+							(capturing <select id="capture-XXX" onchange="refresh()">
+								<option value="yes">Yes</option>
+								<option value="no">No</option>
+								<option value="+lookAhead">Positive lookAhead</option>
+								<option value="-lookAhead">Negative lookAhead</option>
+							</select>)
 							<button id="showQuantifier-XXX" onclick="showQuantifier(event)"
 								class="showQuantifier" disabled="disabled">+</button>
 							<div id="quantifier-XXX" class="quantifier">
 								from <input type="text" id="min-XXX" value="1" size="2"
-									onkeyup="refesh()" />times to <input type="text" id="max-XXX"
-									value="1" size="2" onkeyup="refesh()" />times
+									onkeyup="refresh()" />times to <input type="text" id="max-XXX"
+									value="1" size="2" onkeyup="refresh()" />times
 							</div>
 							<div id="group-XXX" class="group"></div>
 						</div>
@@ -136,21 +153,19 @@
 	<hr />
 	<table>
 		<tr>
+			<td><div id="errMsg"></div></td>
+		</tr>
+		<tr>
 			<td>
 				<fieldset>
 					<legend> Test string </legend>
 					<textarea id="test" onkeyup="testRegexp()"></textarea>
 				</fieldset>
 			</td>
-		</tr>
-		<tr>
-			<td><div id="errMsg"></div></td>
-		</tr>
-		<tr>
 			<td>
 				<fieldset>
 					<legend> Result </legend>
-					<textarea id="result" onkeyup="testRegexp()"></textarea>
+					<textarea id="result"></textarea>
 				</fieldset>
 			</td>
 		</tr>
