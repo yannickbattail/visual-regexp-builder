@@ -1,9 +1,10 @@
 #design {
+	
 }
 
 #design>tr>td {
+	
 }
-
 
 #buttons {
 	display: none;
@@ -46,7 +47,13 @@
 
 .quantifier {
 	display: inline;
-	/*display: none;*/
+}
+
+#quantifierBlock {
+	display: none;
+	position:absolute;
+	top:0px;
+	left:0px;
 }
 
 #schema {

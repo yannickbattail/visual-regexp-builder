@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Visual RegExp builder</title>
+<link rel="stylesheet" type="text/css" href="schema_custom.css" />
+<link rel="stylesheet" type="text/css" href="schema_mandatory.css" />
+
+<!-- <link rel="stylesheet" href="apg.css" type="text/css" /> -->
+<!-- include APG library -->
+<script type="text/javascript" src="apgLib.js"></script>
+<script type="text/javascript" src="apgUtilities.js"></script>
+<script type="text/javascript" src="apgTrace.js"></script>
+<script type="text/javascript" src="apgStats.js"></script>
+<script type="text/javascript" src="apgAst.js"></script>
+<!-- include generated parser -->
+<script type="text/javascript" src="ABNFOpcodes.js"></script>
+<!-- include visual regexp builder files -->
+<script type="text/javascript" src="htmlUtil.js"></script>
+<script type="text/javascript" src="schema.js"></script>
+<script type="text/javascript" src="visual-regexp-builder.js"></script>
+<script type="text/javascript" src="examples.js"></script>
+<!-- JOSN for debug -->
+<script type="text/javascript" src="json2.js"></script>
+</head>
+<body>
+	<h1>Visual RegExp builder</h1>
+	<div>Drag and drop blocks in the schema or type your regular expression in the field "the regexp".</div>
+	<div id="quantifierBlock">
+		<button onclick="closeQuantifierBlock()" style="float: right;">X</button>
+		<input type="radio" name="quantifierRadio" id="quantifierOne" value="optionnal" />
+		one time
+		<br />
+		<input type="radio" name="quantifierRadio" id="quantifierOptionnal" value="optionnal" />
+		optionnal
+		<br />
+		<input type="radio" name="quantifierRadio" id="quantifierIndefinitelyOpt" value="indefinitelyOpt" />
+		repeated indefinitely many times optionnal
+		<br />
+		<input type="radio" name="quantifierRadio" id="quantifierIndefinitely" value="indefinitely" />
+		repeated indefinitely many times
+		<br />
+		<input type="radio" name="quantifierRadio" id="quantifierExact" value="atLeast" />
+		exactly
+		<input type="text" id="quantifierExactMin" value="2" size="2" />
+		times<br />
+		<input type="radio" name="quantifierRadio" id="quantifierAtLeast" value="atLeast" />
+		at least
+		<input type="text" id="quantifierAtLeastMin" value="2" size="2" />
+		times<br />
+		<input type="radio" name="quantifierRadio" id="quantifierAtMost" value="atMost" />
+		at most
+		<input type="text" id="quantifierAtMostMax" value="3" size="2" />
+		times<br />
+		<input type="radio" name="quantifierRadio" id="quantifierRepeated" value="repeated" />
+		repeated
+		<input type="text" id="quantifierRepeatedMin" value="2" size="2" />
+		to
+		<input type="text" id="quantifierRepeatedMax" value="4" size="2" />
+		times
+		<button onclick="saveQuantifierBlock()" style="float: right;">Ok</button>
+	</div>
+	<table id="design">
+		<tr>
+			<td>
+				<input type="checkbox" id="atStart" value="1" onchange="refresh()" />
+				At begining of string/line<br />
+				<fieldset class="mainGroup">
+					<legend> The schema </legend>
+					<div id="schema" class="group"></div>
+				</fieldset>
+				<input type="checkbox" id="atEnd" value="1" onchange="refresh()" />
+				At end of string/line<br /> Options:
+				<ul>
+					<li><input type="checkbox" id="global" value="1" onchange="refresh()" />Global match (match several times)</li>
+					<li><input type="checkbox" id="insensitive" value="1" onchange="refresh()" />Ignore case</li>
+					<li><input type="checkbox" id="multiline" value="1" onchange="refresh()" />Working over multiple lines</li>
+				</ul>
+			</td>
+			<td>
+				<fieldset class="mainGroup">
+					<legend>Recycled bin</legend>
+					<div id="recycledBin" class="group"></div>
+				</fieldset>
+				<fieldset>
+					<legend>Saved regexps</legend>
+					<select id="saved_regexp" onchange="loadExample(this.selectedIndex)" size="5">
+					</select>
+					<button onclick="delExample()">del</button>
+				</fieldset>
+			</td>
+			<td>
+				<fieldset class="mainGroup">
+					<legend>Ressources</legend>
+					<div id="ressources" class="group">
+						<div id="item-XXX" class="item" ondragstart="drag(event)" draggable="true">
+							<input type="hidden" id="type-XXX" value="word" />
+							Word
+							<input type="text" id="value-XXX" value="Hello" onkeyup="refresh()" onfocus="this.parentNode.draggable=false" onblur="this.parentNode.draggable=true" />
+							<input type="hidden" id="min-XXX" value="1" />
+							<input type="hidden" id="max-XXX" value="1" />
+							<button onclick="showQuantifierBlock(event)" id="showQuantifier-XXX" disabled="disabled">how many</button>
+							<div id="quantifier-XXX" class="quantifier">one time</div>
+						</div>
+
+						<div id="item-XXX" class="itemClass" ondragstart="drag(event)" draggable="true">
+							<input type="hidden" id="type-XXX" value="char" />
+							one of theses char
+							<input type="text" id="value-XXX" value="aeiouy" onkeyup="refresh()" />
+						</div>
+
+						<div id="item-XXX" class="itemClass" ondragstart="drag(event)" draggable="true">
+							<input type="hidden" id="type-XXX" value="predefinedClass" />
+							one char
+							<select id="value-XXX" onchange="refresh()">
+								<option value="\d">digit</option>
+								<option value="\s">whitespace</option>
+								<option value="\w">word character</option>
+								<option value="\t">tab</option>
+								<option value="\n">new line</option>
+								<option value="\r">carriage return</option>
+								<option value="\f">form feed</option>
+								<option value="\b">backspace</option>
+								<option value="a-z">alpha lower case</option>
+								<option value="A-Z">alpha upper case</option>
+								<option value="a-zA-Z">alpha upper and lower</option>
+								<option value="a-zA-Z0-9">alphanum</option>
+								<option value="a-f0-9">hexadecimal lowercase</option>
+								<option value="A-F0-9">hexadecimal uppercase</option>
+								<option value="a-fA-F0-9">hexa upper and lower</option>
+							</select>
+						</div>
+
+						<div id="item-XXX" class="itemClass" ondragstart="drag(event)" draggable="true">
+							<input type="hidden" id="type-XXX" value="range" />
+							from char
+							<input type="text" id="first-XXX" value="a" size="2" onkeyup="refresh()" />
+							to char
+							<input type="text" id="last-XXX" value="z" size="2" onkeyup="refresh()" />
+						</div>
+
+						<div id="item-XXX" class="item" ondragstart="drag(event)" draggable="true">
+							<input type="hidden" id="type-XXX" value="class" />
+							(Not
+							<input type="checkbox" id="negative-XXX" value="1" onchange="refresh()" />
+							) one char of this list
+							<input type="hidden" id="min-XXX" value="1" />
+							<input type="hidden" id="max-XXX" value="1" />
+							<button onclick="showQuantifierBlock(event)" id="showQuantifier-XXX" disabled="disabled">how many</button>
+							<div id="quantifier-XXX" class="quantifier">one time</div>
+							<div id="group-XXX" class="groupClass"></div>
+						</div>
+
+						<div id="item-XXX" class="item" ondragstart="drag(event)" draggable="true" style="display: none;">
+							<div id="group-XXX" class="group"></div>
+							<input type="hidden" id="type-XXX" value="or" />
+							OR
+							<div id="group2-XXX" class="group"></div>
+						</div>
+
+						<div id="item-XXX" class="item" ondragstart="drag(event)" draggable="true">
+							<input type="hidden" id="type-XXX" value="alternative" />
+							OR
+						</div>
+
+						<div id="item-XXX" class="item" ondragstart="drag(event)" draggable="true">
+							<input type="hidden" id="type-XXX" value="group" />
+							Group (capturing
+							<select id="capture-XXX" onchange="refresh()">
+								<option value="yes">Yes</option>
+								<option value="no">No</option>
+								<option value="+lookAhead">Positive lookAhead</option>
+								<option value="-lookAhead">Negative lookAhead</option>
+							</select>
+							)
+							<input type="hidden" id="min-XXX" value="1" />
+							<input type="hidden" id="max-XXX" value="1" />
+							<button onclick="showQuantifierBlock(event)" id="showQuantifier-XXX" disabled="disabled">how many</button>
+							<div id="quantifier-XXX" class="quantifier">one time</div>
+							<div id="group-XXX" class="group"></div>
+						</div>
+					</div>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+	<fieldset>
+		<legend> The regexp </legend>
+		<input type="text" id="regexp" value="" onkeyup="typeRegexp()" />
+		<button onclick="saveExample()">save</button>
+	</fieldset>
+	<hr />
+	<table>
+		<tr>
+			<td>
+				<div id="errMsg"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<fieldset>
+					<legend> Test string </legend>
+					<textarea id="test" onkeyup="testRegexp()"></textarea>
+				</fieldset>
+			</td>
+			<td>
+				<fieldset>
+					<legend> Result </legend>
+					<textarea id="result"></textarea>
+				</fieldset>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<fieldset id="codeFieldset">
+					<legend><input type="checkbox" onclick="fold(event, 'code')" />Code</legend>
+					<textarea id="code"></textarea>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+</body>
+<script type="text/javascript">
+    init();
+</script>
+</html>

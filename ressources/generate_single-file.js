@@ -11,23 +11,23 @@ function fileLog(message) {
 
 function replacmentStyles(matches, capture) {
     var fso = new ActiveXObject("Scripting.FileSystemObject");
-    var file = fso.openTextFile(capture, 1, false, 0);
+    var file = fso.openTextFile("../" + capture, 1, false, 0);
     var fileContent = file.readAll();
     file.close();
     return '<style type="text/css">\r\n/* ' + capture + ' */\r\n' + fileContent + '\r\n</style>';
 }
 function replacmentScripts(matches, capture) {
     var fso = new ActiveXObject("Scripting.FileSystemObject");
-    var file = fso.openTextFile(capture, 1, false, 0);
+    var file = fso.openTextFile("../" + capture, 1, false, 0);
     var fileContent = file.readAll();
     file.close();
     return '<script type="text/javascript">\r\n/* ' + capture + ' */\r\n' + fileContent + '\r\n</script>';
 }
 
-var fileName = 'schema';
+var fileName = 'index';
 
 var fso = new ActiveXObject("Scripting.FileSystemObject");
-var file = fso.openTextFile(fileName + '.html', 1, false, 0);
+var file = fso.openTextFile("../" + fileName + '.html', 1, false, 0);
 var fileContent = file.readAll();
 file.close();
 var lines = fileContent.split("\r\n");

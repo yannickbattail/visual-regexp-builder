@@ -26,17 +26,6 @@
 	background-color: Tomato;
 }
 
-.showButtons {
-	
-}
-
-}
-.showButtons:HOVER {
-	text-decoration: underline;
-	border-style: solid;
-	border-width: 1px;
-}
-
 #errMsg {
 	background-color: LightGray;
 }
@@ -140,4 +129,19 @@ fieldset {
 #result {
 	width: 500px;
 	height: 100px;
+}
+
+#code {
+	width: 500px;
+	height: 100px;
+}
+
+#quantifierBlock {
+	background-color: white;
+	padding: 5px;
+	width: 350px;
+	border-radius: 5px;
+	border-style: solid;
+	border-width: 2px;
+	border-color: black;
 }

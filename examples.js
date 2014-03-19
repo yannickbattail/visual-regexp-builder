@@ -1,19 +1,17 @@
 var regexpExamples = [
     {
         "name": "empty",
-        "regexp": "/_/",
+        "regexp": "//",
         "tests": [
-            " ",
             ""
         ],
         "testsFails": [
-            "god",
             "42"
         ]
     },
     {
         "name": "IP v4",
-        "regexp": "/(\\d{1,3}\\.){3}\\d{1,3}/",
+        "regexp": "/(\[0-9]{1,3}\\.){3}[0-9]{1,3}/",
         "tests": [
             "127.0.0.1",
             "192.168.1.254",

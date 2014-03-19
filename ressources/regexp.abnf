@@ -17,7 +17,7 @@ regexpclassnegative = "^"
 regexpcharrange = regexpcharstart "-" regexpcharend
 regexpcharstart = charclass / regexpclassescape
 regexpcharend = charclass / regexpclassescape
-regexpclassword = charclass / regexpclassescape
+regexpclassword = 1*( charclass / regexpclassescape )
 regexpquantifier = ( "?" / "*" / "+" / regexpquantifierrange ) [ "?" ]
 regexpquantifierrange = "{" min [ "," [ max ] ] "}"
 

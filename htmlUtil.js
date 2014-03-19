@@ -36,6 +36,8 @@ function getValue(id, node) {
         } else {
             return e.value;
         }
+    } else if (e.tagName == 'TEXTAREA') {
+        return e.value;
     }
     throw "unknown field type " + e.tagName;
 }
@@ -50,6 +52,8 @@ function setValue(id, value, node) {
         } else {
             return e.value = value;
         }
+    } else if (e.tagName == 'TEXTAREA') {
+        return e.value = value;
     }
     throw "unknown field type" + e.tagName;
 }
