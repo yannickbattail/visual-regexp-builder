@@ -1,14 +1,8 @@
-- problème de backquote dans le parser
-- gérer differement \t qui est un caractère et \d qui est une classe prédéfinie de caractères
 - meilleur DnD
+- corriger DnD dans un fils
 - ajout de batteries des tests
 	2 listes de tests: ce que la regexp doit matcher et ce quelle ne doit pas (un peu un cahier des charges)
 	et ensuite tu contruis ta regexp (text ou block)
 	et quand tt les tests sont ok ca te met un gros stick vert
--un truc qui te genere le code js
-	var matches = myStr.match(new regexp(¨\\d[0-9]¨, ¨gi¨));
-	for (var i = 0; i < matches.length; ++i) {
-	  var match = matches[i]; // do you code with the match ¨match¨ variable
-	}
 - support autres languages de regexp
 - vérifier si des dépendances de fichiers sont innutiles (ex: apg.css)

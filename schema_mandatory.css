@@ -51,9 +51,9 @@
 
 #quantifierBlock {
 	display: none;
-	position:absolute;
-	top:0px;
-	left:0px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
 }
 
 #schema {
@@ -67,4 +67,8 @@
 
 #ressources {
 	width: 400px;
+}
+
+#advencedTests {
+	display: none;
 }

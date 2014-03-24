@@ -257,6 +257,9 @@ function SemCallbacks(log, ruleIds) {
         semList[ruleID["regexpclass"]] = function(state, chars, phraseIndex, phraseCount, data) {
             return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpclass");
         };
+        semList[ruleID["regexppredifinedclass"]] = function(state, chars, phraseIndex, phraseCount, data) {
+            return semGenericContent(state, chars, phraseIndex, phraseCount, data, "regexppredifinedclass");
+        };
         semList[ruleID["regexpcharrange"]] = function(state, chars, phraseIndex, phraseCount, data) {
             return semGeneric(state, chars, phraseIndex, phraseCount, data, "regexpcharrange");
         };
@@ -367,7 +370,7 @@ xmlToJson.regexpsequence = function(rootNode) {
         } else if (node.nodeName == "regexpfactorword") {
             lastItem = {
                 "type": "word",
-                "value": node.firstChild.nodeValue
+                "value": unscapeWord(node.firstChild.nodeValue)
             };
             tab.push(lastItem);
         } else if (node.nodeName == "regexpquantifier") {
@@ -429,6 +432,11 @@ xmlToJson.regexpclass = function(rootNode) {
                 "type": "char",
                 "value": node.firstChild.nodeValue
             });
+        } else if (node.nodeName == "regexppredifinedclass") {
+            ret.group.push({
+                "type": "predefinedClass",
+                "value": node.firstChild.nodeValue
+            });
         }
     }
     return ret;
@@ -474,6 +482,10 @@ function escapeHtml(string) {
     return String(string).replace(/[&<>"'\/]/g, function(s) {
         return entityMap[s];
     });
+}
+
+function unscapeWord(str) {
+    return String(str).replace(/\\([\/\\\[\]{}()?+*|.^$])/g, "$1");
 }
 
 // /////////////////////////////////////////////////////////////////////////////

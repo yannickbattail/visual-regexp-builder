@@ -136,6 +136,15 @@ fieldset {
 	height: 100px;
 }
 
+#structureFieldset {
+	display: none;
+}
+
+#structure {
+	width: 500px;
+	height: 100px;
+}
+
 #quantifierBlock {
 	background-color: white;
 	padding: 5px;

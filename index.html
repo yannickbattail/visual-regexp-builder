@@ -29,17 +29,13 @@
 	<div id="quantifierBlock">
 		<button onclick="closeQuantifierBlock()" style="float: right;">X</button>
 		<input type="radio" name="quantifierRadio" id="quantifierOne" value="optionnal" />
-		one time
-		<br />
+		one time <br />
 		<input type="radio" name="quantifierRadio" id="quantifierOptionnal" value="optionnal" />
-		optionnal
-		<br />
+		optionnal <br />
 		<input type="radio" name="quantifierRadio" id="quantifierIndefinitelyOpt" value="indefinitelyOpt" />
-		repeated indefinitely many times optionnal
-		<br />
+		repeated indefinitely many times optionnal <br />
 		<input type="radio" name="quantifierRadio" id="quantifierIndefinitely" value="indefinitely" />
-		repeated indefinitely many times
-		<br />
+		repeated indefinitely many times <br />
 		<input type="radio" name="quantifierRadio" id="quantifierExact" value="atLeast" />
 		exactly
 		<input type="text" id="quantifierExactMin" value="2" size="2" />
@@ -116,18 +112,15 @@
 								<option value="\d">digit</option>
 								<option value="\s">whitespace</option>
 								<option value="\w">word character</option>
-								<option value="\t">tab</option>
-								<option value="\n">new line</option>
-								<option value="\r">carriage return</option>
-								<option value="\f">form feed</option>
-								<option value="\b">backspace</option>
-								<option value="a-z">alpha lower case</option>
-								<option value="A-Z">alpha upper case</option>
-								<option value="a-zA-Z">alpha upper and lower</option>
-								<option value="a-zA-Z0-9">alphanum</option>
-								<option value="a-f0-9">hexadecimal lowercase</option>
-								<option value="A-F0-9">hexadecimal uppercase</option>
-								<option value="a-fA-F0-9">hexa upper and lower</option>
+								<option value="\D">not a digit</option>
+								<option value="\S">not a whitespace</option>
+								<option value="\W">not a word character</option>
+								<option value=".">any char</option>
+								<!-- 								<option value="\t">tab</option> -->
+								<!-- 								<option value="\n">new line</option> -->
+								<!-- 								<option value="\r">carriage return</option> -->
+								<!-- 								<option value="\f">form feed</option> -->
+								<!-- 								<option value="\b">backspace</option> -->
 							</select>
 						</div>
 
@@ -189,17 +182,22 @@
 		<input type="text" id="regexp" value="" onkeyup="typeRegexp()" />
 		<button onclick="saveExample()">save</button>
 	</fieldset>
-	<hr />
+	<hr onclick="showStructure()" />
 	<table>
 		<tr>
 			<td>
 				<div id="errMsg"></div>
 			</td>
 		</tr>
-		<tr>
+		<tr id="simpleTests">
 			<td>
 				<fieldset>
-					<legend> Test string </legend>
+					<legend>
+						Test
+						<!-- <button onclick="showAdvencedTests(true)"> -->
+						show advanced tests
+						</button>
+					</legend>
 					<textarea id="test" onkeyup="testRegexp()"></textarea>
 				</fieldset>
 			</td>
@@ -210,11 +208,43 @@
 				</fieldset>
 			</td>
 		</tr>
+		<tr id="advencedTests">
+			<td>
+				<fieldset>
+					<legend>
+						Test that should success
+						<button onclick="showAdvencedTests(false)">show simple tests</button>
+					</legend>
+					<select id="testSuccess" size="4"></select>
+					<br />
+					<button onclick="addTest('testSuccess')">add</button>
+					<button onclick="delTest('testSuccess')">del</button>
+				</fieldset>
+			</td>
+			<td>
+				<fieldset>
+					<legend> Test that should fails </legend>
+					<select id="testFail" size="4"></select>
+					<br />
+					<button onclick="addTest('testFail')">add</button>
+					<button onclick="delTest('testFail')">del</button>
+				</fieldset>
+			</td>
+		</tr>
 		<tr>
 			<td>
 				<fieldset id="codeFieldset">
-					<legend><input type="checkbox" onclick="fold(event, 'code')" />Code</legend>
+					<legend>
+						<input type="checkbox" onclick="fold(event, 'code')" />
+						Code
+					</legend>
 					<textarea id="code"></textarea>
+				</fieldset>
+			</td>
+			<td>
+				<fieldset id="structureFieldset">
+					<legend> Structure </legend>
+					<textarea id="structure"></textarea>
 				</fieldset>
 			</td>
 		</tr>
@@ -222,5 +252,6 @@
 </body>
 <script type="text/javascript">
     init();
+    konamiCode.init();
 </script>
 </html>
