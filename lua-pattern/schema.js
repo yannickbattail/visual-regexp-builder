@@ -6,7 +6,7 @@ var selectedItem = null;
  * @returns {String}
  */
 function escapeCharFactor(string) {
-    return String(string).replace(/[\\ \/\\\[\]{}()?+*|.\^$]/g, '\\$&');
+    return String(string).replace(/[\\ \[\]()?+\-*|.\^$%]/g, '%$&');
 }
 
 /**
@@ -14,11 +14,11 @@ function escapeCharFactor(string) {
  * @returns {String}
  */
 function escapeCharClass(string) {
-    return String(string).replace(/[\\ \/\\\[\]\^\-]/g, '\\$&');
+    return String(string).replace(/[\\ \[\]\^\-%]/g, '%$&');
 }
 
 /**
- * @param {Node} string
+ * @param {Node} selectedItem
  * @returns {Number}
  */
 function getItemNum(selectedItem) {
@@ -101,9 +101,11 @@ function showQuantifierBlock(event) {
         gel('quantifierOptionnal').checked = true;
     } else if ((min === '0') && (max === '')) {
         gel('quantifierIndefinitelyOpt').checked = true;
+    } else if ((min === '0') && (max === '-1')) {
+        gel('quantifierIndefinitelyShort').checked = true;
     } else if ((min === '1') && (max === '')) {
         gel('quantifierIndefinitely').checked = true;
-    } else if (max === '') {
+    }/* else if (max === '') {
         gel('quantifierAtLeast').checked = true;
         gel('quantifierAtLeastMin').value = min;
     } else if (min === '0') {
@@ -116,7 +118,7 @@ function showQuantifierBlock(event) {
         gel('quantifierRepeated').checked = true;
         gel('quantifierRepeatedMin').value = min;
         gel('quantifierRepeatedMax').value = max;
-    }
+    }*/
 }
 
 /**
@@ -143,10 +145,13 @@ function saveQuantifierBlock(event) {
     } else if (gel('quantifierIndefinitelyOpt').checked) {
         gel('min-' + n).value = '0';
         gel('max-' + n).value = '';
+    }  else if (gel('quantifierIndefinitelyShort').checked) {
+        gel('min-' + n).value = '0';
+        gel('max-' + n).value = '-1';
     } else if (gel('quantifierIndefinitely').checked) {
         gel('min-' + n).value = '1';
         gel('max-' + n).value = '';
-    } else if (gel('quantifierExact').checked) {
+    }/* else if (gel('quantifierExact').checked) {
         gel('min-' + n).value = gel('quantifierExactMin').value;
         gel('max-' + n).value = gel('quantifierExactMin').value;
     } else if (gel('quantifierAtLeast').checked) {
@@ -158,7 +163,7 @@ function saveQuantifierBlock(event) {
     } else if (gel('quantifierRepeated').checked) {
         gel('min-' + n).value = gel('quantifierRepeatedMin').value;
         gel('max-' + n).value = gel('quantifierRepeatedMax').value;
-    }
+    }*/
     setQuantifierText(n);
     refresh();
 }
@@ -176,10 +181,12 @@ function setQuantifierText(n, node) {
     } else if ((min === '0') && (max === '1')) {
         txt = 'optionnal';
     } else if ((min === '0') && (max === '')) {
-        txt = 'indefinitely optionnal';
-    } else if ((min === '1') && (max === '')) {
+        txt = 'indefinitely longest optionnal';
+    } else if ((min === '0') && (max === '-1')) {
+        txt = 'indefinitely shortest optionnal';
+    }  else if ((min === '1') && (max === '')) {
         txt = 'indefinitely';
-    } else if (max === '') {
+    }/* else if (max === '') {
         txt = 'at least ' + min + ' times';
     } else if (min === '0') {
         txt = 'at most ' + max + ' times';
@@ -187,7 +194,7 @@ function setQuantifierText(n, node) {
         txt = 'exactly ' + min + ' times';
     } else {
         txt = 'repeated ' + min + ' to ' + max + ' times ';
-    }
+    }*/
     gel('quantifier-' + n, node).innerHTML = txt;
 }
 
@@ -316,17 +323,16 @@ function generateCode() {
     var regexp = getValue('regexp');
     var test = getValue('test');
     var code = '';
-    code += 'var myStr = "' + test.replace('"', '\\"') + '";\r\n';
-    code += 'var matches = myStr.match(' + regexp + ');\r\n';
-    code += 'if (matches !== null) {\r\n';
-    code += '    for (var i = 0; i &lt; matches.length; ++i) {\r\n';
-    code += '        var match = matches[i];\r\n';
-    code += '        // do you code with the match "match" variable\r\n';
-    code += '        alert("match: " + match);\r\n';
-    code += '    }\r\n';
-    code += '} else {\r\n';
-    code += '    alert("The regexp does not matches.");\r\n';
-    code += '}\r\n';
+    code += 'local myStr = "' + test.replace('"', '\\"') + '"\r\n';
+    code += 'local matches = string.match(myStr, + "' + regexp.replace('"', '\\"') + '")\r\n';
+    code += 'if matches ~= nil then\r\n';
+    code += '    for i,match in ipairs(matches) do\r\n';
+    code += '        -- do your code with the "match" variable\r\n';
+    code += '        print("match: " + match)\r\n';
+    code += '    end\r\n';
+    code += 'else\r\n';
+    code += '    print("The regexp does not matche.")\r\n';
+    code += 'end\r\n';
     gel('code').innerHTML = code;
 }
 
@@ -334,6 +340,7 @@ function generateCode() {
  * 
  */
 function testRegexp() {
+    /*
     try {
         var theRegexp = eval(gel('regexp').value);
         var res = gel('test').value.match(theRegexp);
@@ -350,6 +357,7 @@ function testRegexp() {
         gel('errMsg').innerHTML = 'Some thing is wrong in the regexp. Error message: ' + e.message;
         gel('regexp').className = 'regexpFailed';
     }
+    */
     generateCode();
 }
 
@@ -360,23 +368,13 @@ function testRegexp() {
  * @returns {String} the regexp
  */
 function structureToRegexp(structure) {
-    var regexp = '/';
+    var regexp = '';
     if (structure.atStart) {
         regexp += '^';
     }
     regexp += structureToRegexpRecurs(structure.group);
     if (structure.atEnd) {
         regexp += '$';
-    }
-    regexp += '/';
-    if (structure.global) {
-        regexp += 'g';
-    }
-    if (structure.insensitive) {
-        regexp += 'i';
-    }
-    if (structure.multiline) {
-        regexp += 'm';
     }
     return regexp;
 }
@@ -410,6 +408,7 @@ function structureToRegexpRecurs(itemGroup) {
             regexp += ')';
         } else if (item.type == "group") {
             regexp += '(';
+            /*
             if (item.capture == 'yes') {
                 // regexp += '?:';
             } else if (item.capture == 'no') {
@@ -419,6 +418,7 @@ function structureToRegexpRecurs(itemGroup) {
             } else if (item.capture == '-lookAhead') {
                 regexp += '?!';
             }
+            */
             regexp += structureToRegexpRecurs(item.group);
             regexp += ')';
             regexp += structureToRegexpQuantifier(item.min, item.max);
@@ -462,13 +462,15 @@ function structureToRegexpQuantifier(v1, v2) {
         regexp += '*';
     } else if (v1 == 1 && v2 == '') {
         regexp += '+';
+    }  else if (v1 == 0 && v2 == '-1') {
+        regexp += '-';
     } else if (v1 == 1 && v2 == 1) {
         regexp += '';
-    } else if (v1 == v2) {
+    }/* else if (v1 == v2) {
         regexp += '{' + v1 + '}';
     } else {
         regexp += '{' + v1 + ',' + v2 + '}';
-    }
+    }*/
     return regexp;
 }
 
@@ -525,9 +527,11 @@ function schemaToStructure() {
     item.type = "literal";
     item.atStart = getValue('atStart') ? true : false;
     item.atEnd = getValue('atEnd') ? true : false;
+    /*
     item.global = getValue('global') ? true : false;
     item.insensitive = getValue('insensitive') ? true : false;
     item.multiline = getValue('multiline') ? true : false;
+    */
     item.group = schemaToStructureRecurs(gel('schema'));
     gel('structure').value = JSON.stringify(item, null, 2);
     return item;
@@ -564,7 +568,7 @@ function schemaToStructureRecurs(nodeRoot) {
                 item.group2 = schemaToStructureRecurs(gel('group2-' + n));
             } else if (gel('type-' + n).value == "group") {
                 item.type = "group";
-                item.capture = getValue('capture-' + n);
+                //item.capture = getValue('capture-' + n);
                 item.group = schemaToStructureRecurs(gel('group-' + n));
                 item.min = getValue('min-' + n);
                 item.max = getValue('max-' + n);

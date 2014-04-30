@@ -24,19 +24,21 @@
 <script type="text/javascript" src="json2.js"></script>
 </head>
 <body>
-	<h1>Visual RegExp builder</h1>
+	<h1>Visual RegExp builder for lua pattern</h1>
 	<div>Drag and drop blocks in the schema or type your regular expression in the field "the regexp".</div>
 	<div id="quantifierBlock">
 		<button onclick="closeQuantifierBlock()" style="float: right;">X</button>
-		<input type="radio" name="quantifierRadio" id="quantifierOne" value="optionnal" />
+		<input type="radio" name="quantifierRadio" id="quantifierOne" value="one" />
 		one time <br />
 		<input type="radio" name="quantifierRadio" id="quantifierOptionnal" value="optionnal" />
 		optionnal <br />
 		<input type="radio" name="quantifierRadio" id="quantifierIndefinitelyOpt" value="indefinitelyOpt" />
-		repeated indefinitely many times optionnal <br />
+		repeated indefinitely many times longest optionnal<br />
+		<input type="radio" name="quantifierRadio" id="quantifierIndefinitelyShort" value="indefinitelyShort" />
+		repeated indefinitely many times shortest optionnal<br />
 		<input type="radio" name="quantifierRadio" id="quantifierIndefinitely" value="indefinitely" />
 		repeated indefinitely many times <br />
-		<input type="radio" name="quantifierRadio" id="quantifierExact" value="atLeast" />
+<!-- 		<input type="radio" name="quantifierRadio" id="quantifierExact" value="atLeast" />
 		exactly
 		<input type="text" id="quantifierExactMin" value="2" size="2" />
 		times<br />
@@ -54,7 +56,7 @@
 		to
 		<input type="text" id="quantifierRepeatedMax" value="4" size="2" />
 		times
-		<button onclick="saveQuantifierBlock()" style="float: right;">Ok</button>
+ -->		<button onclick="saveQuantifierBlock()" style="float: right;">Ok</button>
 	</div>
 	<table id="design">
 		<tr>
@@ -66,12 +68,13 @@
 					<div id="schema" class="group"></div>
 				</fieldset>
 				<input type="checkbox" id="atEnd" value="1" onchange="refresh()" />
-				At end of string/line<br /> Options:
+				At end of string/line
+				<!-- <br /> Options:
 				<ul>
 					<li><input type="checkbox" id="global" value="1" onchange="refresh()" />Global match (match several times)</li>
 					<li><input type="checkbox" id="insensitive" value="1" onchange="refresh()" />Ignore case</li>
 					<li><input type="checkbox" id="multiline" value="1" onchange="refresh()" />Working over multiple lines</li>
-				</ul>
+				</ul> -->
 			</td>
 			<td>
 				<fieldset class="mainGroup">
@@ -109,18 +112,17 @@
 							<input type="hidden" id="type-XXX" value="predefinedClass" />
 							one char
 							<select id="value-XXX" onchange="refresh()">
-								<option value="\d">digit</option>
-								<option value="\s">whitespace</option>
-								<option value="\w">word character</option>
-								<option value="\D">not a digit</option>
-								<option value="\S">not a whitespace</option>
-								<option value="\W">not a word character</option>
 								<option value=".">any char</option>
-								<!-- 								<option value="\t">tab</option> -->
-								<!-- 								<option value="\n">new line</option> -->
-								<!-- 								<option value="\r">carriage return</option> -->
-								<!-- 								<option value="\f">form feed</option> -->
-								<!-- 								<option value="\b">backspace</option> -->
+								<option value="%a">letters</option>
+								<option value="%l">lowercase letters</option>
+								<option value="%u">uppercase letters</option>
+								<option value="%w">alphanumeric characters</option>
+								<option value="%d">digits</option>
+								<option value="%x">hexadecimal digits</option>
+								<option value="%p">punctuation characters</option>
+								<option value="%s">space characters</option>
+								<option value="%c">control characters</option>
+								<option value="%z">the zero character</option>
 							</select>
 						</div>
 
@@ -158,14 +160,14 @@
 
 						<div id="item-XXX" class="item" ondragstart="drag(event)" draggable="true">
 							<input type="hidden" id="type-XXX" value="group" />
-							Group (capturing
+							Capture <!-- (capturing
 							<select id="capture-XXX" onchange="refresh()">
 								<option value="yes">Yes</option>
 								<option value="no">No</option>
 								<option value="+lookAhead">Positive lookAhead</option>
 								<option value="-lookAhead">Negative lookAhead</option>
 							</select>
-							)
+							) -->
 							<input type="hidden" id="min-XXX" value="1" />
 							<input type="hidden" id="max-XXX" value="1" />
 							<button onclick="showQuantifierBlock(event)" id="showQuantifier-XXX" disabled="disabled">how many</button>
@@ -189,7 +191,7 @@
 				<div id="errMsg"></div>
 			</td>
 		</tr>
-		<tr id="simpleTests">
+		<tr id="simpleTests" style="display: none;">
 			<td>
 				<fieldset>
 					<legend>

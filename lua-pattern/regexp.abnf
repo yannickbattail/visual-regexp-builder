@@ -1,0 +1,42 @@
+regexpliteral = [ regexpatstart ] regexpsequence *( regexpalternative regexpsequence ) [ regexpatend ]
+;regexpliteral = "/" [ regexpatstart ] regexpsequence *( regexpalternative regexpsequence ) [ regexpatend ] "/" regexpoptions
+regexpatstart = "^"
+regexpatend = "$"
+;regexpoptions = 0*3( "g" / "i" / "m" )
+;regexpchoice = regexpsequence *( regexpalternative regexpsequence )
+regexpalternative = "|"
+regexpsequence = 1*( (regexpclass / regexpgroup / regexpfactorword) [ regexpquantifier ] )
+;regexpsequence = 1*( regexpfactor [ regexpquantifier ] )
+;regexpfactor = regexpclass / regexpgroup / regexpfactorword
+regexpfactorword = 1*( charfactor / regexpescape )
+regexpgroup = "(" [ regexpgroupcapture ] regexpsequence *( regexpalternative regexpsequence ) ")"
+;regexpgroup = "(" [ regexpgroupcapture ] regexpchoice ")"
+regexpgroupcapture = "?" [ ":" / "=" / "!" ]
+regexpclass = regexppredifinedclass / ( "[" [ regexpclassnegative ] 1*( regexppredifinedclass / regexpcharrange / regexpclassword ) "]" ) 
+regexpclassnegative = "^"
+regexppredifinedclass = "\D" / "\S" / "\W" / "\d" / "\s" / "\w" / "."
+regexpcharrange = regexpcharstart "-" regexpcharend
+regexpcharstart = charclass / regexpclassescape
+regexpcharend = charclass / regexpclassescape
+regexpclassword = 1*( charclass / regexpclassescape )
+regexpquantifier = ( "?" / "*" / "+" / "-" )
+;regexpquantifier = ( "?" / "*" / "+" / "-" / regexpquantifierrange ) [ "?" ]
+;regexpquantifierrange = "{" min [ "," [ max ] ] "}"
+
+regexpclassescape = "%" (
+     "a" / "c" / "d" / "r" / "l" / "p" / "s" / "u" / "w" / "x" / "z" /
+     charspecial / DIGIT )
+regexpescape = "%" (
+     "a" / "c" / "d" / "r" / "l" / "p" / "s" / "u" / "w" / "x" / "z" /
+     charspecialfactor / DIGIT )
+charfactor = ALPHA / DIGIT / "{" / "}" / "#" / "/" / "\" / "&" / "!" / "'" / "," / ":" / ";" / "<" / "=" / ">" / "@" / "_" / "`" / "~" / %x41 ; not %[]()?+-*|.^$ and %x41 is the caractere "
+charclass = ALPHA / DIGIT / "{" / "}" / "(" / ")" / "$" / "+" / "*" / "?" / "|" / "#" / "/" / "\" / "&" / "!" / "'" / "," / ":" / ";" / "<" / "=" / ">" / "@" / "_" / "`" / "~" / %x41 ; not %[]^-
+charspecialfactor = "[" / "]" / "^" / "(" / ")" / "?" / "+" / "*" / "|" / "." /"^" / "$" / "%" / " "
+charspecial = "-" / "[" / "%" / "]" / "^" / " "
+
+min = 1*DIGIT
+max = 1*DIGIT
+
+HEXDIG = DIGIT / %x61-65 / %x41-45
+DIGIT = %x30-39
+ALPHA = %x41-5A / %x61-7A
