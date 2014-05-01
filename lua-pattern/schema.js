@@ -398,7 +398,7 @@ function structureToRegexpRecurs(itemGroup) {
             regexp += structureToRegexpClass(item.group);
             regexp += ']';
             regexp += structureToRegexpQuantifier(item.min, item.max);
-        } else if (item.type == "alternative") {
+        }/* else if (item.type == "alternative") {
             regexp += '|';
         } else if (item.type == "or") {
             regexp += '(';
@@ -406,7 +406,7 @@ function structureToRegexpRecurs(itemGroup) {
             regexp += ')|(';
             regexp += structureToRegexpRecurs(item.group2);
             regexp += ')';
-        } else if (item.type == "group") {
+        }*/ else if (item.type == "group") {
             regexp += '(';
             /*
             if (item.capture == 'yes') {
@@ -560,13 +560,13 @@ function schemaToStructureRecurs(nodeRoot) {
                 item.group = schemaToStructureRecurs(gel('group-' + n));
                 item.min = getValue('min-' + n);
                 item.max = getValue('max-' + n);
-            } else if (gel('type-' + n).value == "alternative") {
+            }/* else if (gel('type-' + n).value == "alternative") {
                 item.type = "alternative";
             } else if (gel('type-' + n).value == "or") {
                 item.type = "or";
                 item.group = schemaToStructureRecurs(gel('group-' + n));
                 item.group2 = schemaToStructureRecurs(gel('group2-' + n));
-            } else if (gel('type-' + n).value == "group") {
+            }*/ else if (gel('type-' + n).value == "group") {
                 item.type = "group";
                 //item.capture = getValue('capture-' + n);
                 item.group = schemaToStructureRecurs(gel('group-' + n));

@@ -1,15 +1,15 @@
-regexpliteral = [ regexpatstart ] regexpsequence *( regexpalternative regexpsequence ) [ regexpatend ]
+regexpliteral = [ regexpatstart ] regexpsequence [ regexpatend ]
 ;regexpliteral = "/" [ regexpatstart ] regexpsequence *( regexpalternative regexpsequence ) [ regexpatend ] "/" regexpoptions
 regexpatstart = "^"
 regexpatend = "$"
 ;regexpoptions = 0*3( "g" / "i" / "m" )
 ;regexpchoice = regexpsequence *( regexpalternative regexpsequence )
-regexpalternative = "|"
+;regexpalternative = "|"
 regexpsequence = 1*( (regexpclass / regexpgroup / regexpfactorword) [ regexpquantifier ] )
 ;regexpsequence = 1*( regexpfactor [ regexpquantifier ] )
 ;regexpfactor = regexpclass / regexpgroup / regexpfactorword
 regexpfactorword = 1*( charfactor / regexpescape )
-regexpgroup = "(" [ regexpgroupcapture ] regexpsequence *( regexpalternative regexpsequence ) ")"
+regexpgroup = "(" [ regexpgroupcapture ] regexpsequence ")"
 ;regexpgroup = "(" [ regexpgroupcapture ] regexpchoice ")"
 regexpgroupcapture = "?" [ ":" / "=" / "!" ]
 regexpclass = regexppredifinedclass / ( "[" [ regexpclassnegative ] 1*( regexppredifinedclass / regexpcharrange / regexpclassword ) "]" ) 
@@ -29,9 +29,9 @@ regexpclassescape = "%" (
 regexpescape = "%" (
      "a" / "c" / "d" / "r" / "l" / "p" / "s" / "u" / "w" / "x" / "z" /
      charspecialfactor / DIGIT )
-charfactor = ALPHA / DIGIT / "{" / "}" / "#" / "/" / "\" / "&" / "!" / "'" / "," / ":" / ";" / "<" / "=" / ">" / "@" / "_" / "`" / "~" / %x41 ; not %[]()?+-*|.^$ and %x41 is the caractere "
+charfactor = ALPHA / DIGIT / "{" / "}" / "#" / "/" / "\" / "&" / "!" / "'" / "|" / "," / ":" / ";" / "<" / "=" / ">" / "@" / "_" / "`" / "~" / %x41 ; not %[]()?+-*|.^$ and %x41 is the caractere "
 charclass = ALPHA / DIGIT / "{" / "}" / "(" / ")" / "$" / "+" / "*" / "?" / "|" / "#" / "/" / "\" / "&" / "!" / "'" / "," / ":" / ";" / "<" / "=" / ">" / "@" / "_" / "`" / "~" / %x41 ; not %[]^-
-charspecialfactor = "[" / "]" / "^" / "(" / ")" / "?" / "+" / "*" / "|" / "." /"^" / "$" / "%" / " "
+charspecialfactor = "[" / "]" / "^" / "(" / ")" / "?" / "+" / "*" / "." /"^" / "$" / "%" / " "
 charspecial = "-" / "[" / "%" / "]" / "^" / " "
 
 min = 1*DIGIT

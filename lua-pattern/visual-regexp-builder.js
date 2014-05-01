@@ -345,11 +345,11 @@ xmlToJson.regexpliteral = function(rootNode) {
             if (node.firstChild.nodeValue.indexOf('m') !== -1) {
                 ret.multiline = true;
             }
-        }*/ else if (node.nodeName == "regexpalternative") {
+        } else if (node.nodeName == "regexpalternative") {
             ret.group.push({
                 "type": "alternative"
             });
-        } else if (node.nodeName == "regexpsequence") {
+        }*/ else if (node.nodeName == "regexpsequence") {
             ret.group = ret.group.concat(xmlToJson.regexpsequence(node));
         }
     }
@@ -463,11 +463,11 @@ xmlToJson.regexpgroup = function(rootNode) {
                 ret.capture = "-lookAhead";
             }
             */
-        } else if (node.nodeName == "regexpalternative") {
+        } /*else if (node.nodeName == "regexpalternative") {
             ret.group.push({
                 "type": "alternative"
             });
-        } else if (node.nodeName == "regexpsequence") {
+        } */else if (node.nodeName == "regexpsequence") {
             ret.group = ret.group.concat(xmlToJson.regexpsequence(node));
         }
     }
