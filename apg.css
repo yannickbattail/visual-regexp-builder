@@ -296,7 +296,7 @@ table.apg-table tr
     border-right: 0;
     border-bottom: 1px solid white;
 }
-.controls .button-active, .controls .button-active:hover, .controls .button-inactive,
+.controls .button-active, .controls .button-active:hover, .controls .button-inactive
 {
     width:155px;
 }

@@ -1,0 +1,10 @@
+
+wget http://coasttocoastresearch.com/doc61/apg-6.1.tar.gz
+tar xvzf apg-6.1.tar.gz
+cd apg-6.1/
+# sudo apt-get install gcc g++
+./configure
+make
+sudo make install
+apg /js /in:regexp.abnf /out:regexpParser
+
