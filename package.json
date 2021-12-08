@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "apg": "node_modules/apg-js/bin/apg.sh",
+    "generate_parser": "node_modules/apg-js/bin/apg.sh --in=./resources/regexp.abnf --out=parser.js"
+  },
+  "dependencies": {
+    "apg-js": "^4.1.1"
+  }
+}
