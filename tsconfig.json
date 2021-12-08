@@ -4,10 +4,8 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "strict": true,
+    "strict": true
   },
-  "lib": ["dom","es6"],
-  "files": [
-    "./model/*.ts"
-  ]
+  "lib": ["dom", "es6"],
+  "files": ["./model/*.ts"]
 }
