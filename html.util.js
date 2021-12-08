@@ -23,45 +23,50 @@ html.gel = function(id, node) {
     }
 };
 
-html.getValue = function(htmlElem, node) {
-    if (htmlElem.tagName == 'SELECT') {
-        return htmlElem.options[e.selectedIndex].value;
-    } else if (htmlElem.tagName == 'INPUT') {
-        if (htmlElem.type == 'checkbox') {
-            return htmlElem.checked;
-        } else {
-            return htmlElem.value;
-        }
-    } else if (htmlElem.tagName == 'TEXTAREA') {
-        return htmlElem.value;
+html.getSel = function(id, node) {
+  var e = html.gel(id, node);
+  return e.options[e.selectedIndex].value;
+}
+
+html.setSel = function(id, value, node) {
+  var e = html.gel(id, node);
+  for (var i, j = 0; i = e.options[j]; j++) {
+    if (i.value == value) {
+      e.selectedIndex = j;
+      break;
     }
-    throw "unknown field type " + htmlElem.tagName;
+  }
+}
+html.getValue = function(id, node) {
+  var e = html.gel(id, node);
+  if (e.tagName == 'SELECT') {
+    return html.getSel(id);
+  } else if (e.tagName == 'INPUT') {
+    if (e.type == 'checkbox') {
+      return e.checked;
+    } else {
+      return e.value;
+    }
+  } else if (e.tagName == 'TEXTAREA') {
+    return e.value;
+  }
+  throw "unknown field type " + e.tagName;
 };
 
-html.setValue = function(htmlElem, value) {
-    if (htmlElem.tagName == 'SELECT') {
-        for (var i = 0; i < htmlElem.options.length; i++) {
-            var option = htmlElem.options[i];
-            if (option.value == value) {
-                htmlElem.selectedIndex = i;
-                return value;
-            }
-        }
-        return null;
-    } else if (htmlElem.tagName == 'INPUT') {
-        if (htmlElem.type == 'checkbox') {
-            if ((value === "true") || (value === true) || (value === "1") || (value === 1)) {
-                return htmlElem.checked = true;
-            } else {
-                return htmlElem.checked = false;
-            }
-        } else {
-            return htmlElem.value = value;
-        }
-    } else if (htmlElem.tagName == 'TEXTAREA') {
-        return htmlElem.value = value;
+html.setValue = function(id, value, node) {
+  var e = html.gel(id, node);
+  if (e.tagName == 'SELECT') {
+    return html.setSel(id, value, node);
+  } else if (e.tagName == 'INPUT') {
+    if (e.type == 'checkbox') {
+      return e.checked = value ? true : false;
+    } else {
+      return e.value = value;
     }
-    throw "unknown field type" + htmlElem.tagName;
+  } else if (e.tagName == 'TEXTAREA') {
+    return e.value = value;
+  }
+  throw "unknown field type" + e.tagName;
 };
 
 html.clearSelect = function(htmlSelect) {
@@ -95,7 +100,7 @@ html.hasCssClass = function(htmlElem, className) {
 
 html.addCssClass = function(htmlElem, className) {
     if (htmlElem.className) {
-        if (!hasCssClass(htmlElem, className)) {
+        if (!html.hasCssClass(htmlElem, className)) {
             htmlElem.className += ' ' + className;
         }
     } else {

@@ -73,14 +73,14 @@ function duplicateItem(oldNode) {
  */
 function fold(event, field) {
     if (!event.target.checked) {
-        gel(field).style.display = 'none';
+        html.gel(field).style.display = 'none';
     } else {
-        gel(field).style.display = 'block';
+        html.gel(field).style.display = 'block';
     }
 }
 
 function showStructure() {
-    gel('structureFieldset').style.display = 'block';
+    html.gel('structureFieldset').style.display = 'block';
 }
 
 /**
@@ -88,34 +88,34 @@ function showStructure() {
  */
 function showQuantifierBlock(event) {
     selectedItem = event.target.parentNode;
-    var q = gel('quantifierBlock');
+    var q = html.gel('quantifierBlock');
     q.style.display = 'block';
     q.style.left = String(event.pageX) + 'px';
     q.style.top = String(event.pageY) + 'px';
     var n = getItemNum(selectedItem);
-    var min = gel('min-' + n).value;
-    var max = gel('max-' + n).value;
+    var min = html.gel('min-' + n).value;
+    var max = html.gel('max-' + n).value;
     if ((min == 1) && (max == 1)) {
-        gel('quantifierOne').checked = true;
+        html.gel('quantifierOne').checked = true;
     } else if ((min === '0') && (max === '1')) {
-        gel('quantifierOptionnal').checked = true;
+        html.gel('quantifierOptionnal').checked = true;
     } else if ((min === '0') && (max === '')) {
-        gel('quantifierIndefinitelyOpt').checked = true;
+        html.gel('quantifierIndefinitelyOpt').checked = true;
     } else if ((min === '1') && (max === '')) {
-        gel('quantifierIndefinitely').checked = true;
+        html.gel('quantifierIndefinitely').checked = true;
     } else if (max === '') {
-        gel('quantifierAtLeast').checked = true;
-        gel('quantifierAtLeastMin').value = min;
+        html.gel('quantifierAtLeast').checked = true;
+        html.gel('quantifierAtLeastMin').value = min;
     } else if (min === '0') {
-        gel('quantifierAtMost').checked = true;
-        gel('quantifierAtMostMax').value = max;
+        html.gel('quantifierAtMost').checked = true;
+        html.gel('quantifierAtMostMax').value = max;
     } else if (min === max) {
-        gel('quantifierExact').checked = true;
-        gel('quantifierExactMin').value = min;
+        html.gel('quantifierExact').checked = true;
+        html.gel('quantifierExactMin').value = min;
     } else {
-        gel('quantifierRepeated').checked = true;
-        gel('quantifierRepeatedMin').value = min;
-        gel('quantifierRepeatedMax').value = max;
+        html.gel('quantifierRepeated').checked = true;
+        html.gel('quantifierRepeatedMin').value = min;
+        html.gel('quantifierRepeatedMax').value = max;
     }
 }
 
@@ -123,7 +123,7 @@ function showQuantifierBlock(event) {
  * @param {Event} event
  */
 function closeQuantifierBlock(event) {
-    var q = gel('quantifierBlock');
+    var q = html.gel('quantifierBlock');
     q.style.display = 'none';
 }
 
@@ -131,33 +131,33 @@ function closeQuantifierBlock(event) {
  * @param {Event} event
  */
 function saveQuantifierBlock(event) {
-    var q = gel('quantifierBlock');
+    var q = html.gel('quantifierBlock');
     q.style.display = 'none';
     var n = getItemNum(selectedItem);
-    if (gel('quantifierOne').checked) {
-        gel('min-' + n).value = '1';
-        gel('max-' + n).value = '1';
-    } else if (gel('quantifierOptionnal').checked) {
-        gel('min-' + n).value = '0';
-        gel('max-' + n).value = '1';
-    } else if (gel('quantifierIndefinitelyOpt').checked) {
-        gel('min-' + n).value = '0';
-        gel('max-' + n).value = '';
-    } else if (gel('quantifierIndefinitely').checked) {
-        gel('min-' + n).value = '1';
-        gel('max-' + n).value = '';
-    } else if (gel('quantifierExact').checked) {
-        gel('min-' + n).value = gel('quantifierExactMin').value;
-        gel('max-' + n).value = gel('quantifierExactMin').value;
-    } else if (gel('quantifierAtLeast').checked) {
-        gel('min-' + n).value = gel('quantifierAtLeastMin').value;
-        gel('max-' + n).value = '';
-    } else if (gel('quantifierAtMost').checked) {
-        gel('min-' + n).value = '0';
-        gel('max-' + n).value = gel('quantifierAtMostMax').value;
-    } else if (gel('quantifierRepeated').checked) {
-        gel('min-' + n).value = gel('quantifierRepeatedMin').value;
-        gel('max-' + n).value = gel('quantifierRepeatedMax').value;
+    if (html.gel('quantifierOne').checked) {
+        html.gel('min-' + n).value = '1';
+        html.gel('max-' + n).value = '1';
+    } else if (html.gel('quantifierOptionnal').checked) {
+        html.gel('min-' + n).value = '0';
+        html.gel('max-' + n).value = '1';
+    } else if (html.gel('quantifierIndefinitelyOpt').checked) {
+        html.gel('min-' + n).value = '0';
+        html.gel('max-' + n).value = '';
+    } else if (html.gel('quantifierIndefinitely').checked) {
+        html.gel('min-' + n).value = '1';
+        html.gel('max-' + n).value = '';
+    } else if (html.gel('quantifierExact').checked) {
+        html.gel('min-' + n).value = html.gel('quantifierExactMin').value;
+        html.gel('max-' + n).value = html.gel('quantifierExactMin').value;
+    } else if (html.gel('quantifierAtLeast').checked) {
+        html.gel('min-' + n).value = html.gel('quantifierAtLeastMin').value;
+        html.gel('max-' + n).value = '';
+    } else if (html.gel('quantifierAtMost').checked) {
+        html.gel('min-' + n).value = '0';
+        html.gel('max-' + n).value = html.gel('quantifierAtMostMax').value;
+    } else if (html.gel('quantifierRepeated').checked) {
+        html.gel('min-' + n).value = html.gel('quantifierRepeatedMin').value;
+        html.gel('max-' + n).value = html.gel('quantifierRepeatedMax').value;
     }
     setQuantifierText(n);
     refresh();
@@ -168,8 +168,8 @@ function saveQuantifierBlock(event) {
  * @param {Node} node
  */
 function setQuantifierText(n, node) {
-    var min = gel('min-' + n, node).value;
-    var max = gel('max-' + n, node).value;
+    var min = html.gel('min-' + n, node).value;
+    var max = html.gel('max-' + n, node).value;
     var txt = '';
     if ((min == 1) && (max == 1)) {
         txt = 'one time';
@@ -188,13 +188,13 @@ function setQuantifierText(n, node) {
     } else {
         txt = 'repeated ' + min + ' to ' + max + ' times ';
     }
-    gel('quantifier-' + n, node).innerHTML = txt;
+    html.gel('quantifier-' + n, node).innerHTML = txt;
 }
 
 function loadExampleList() {
-    gel("saved_regexp").innerHTML = '';
+    html.gel("saved_regexp").innerHTML = '';
     for (var i = 0; i < regexpExamples.length; i++) {
-        gel("saved_regexp").innerHTML += '<option value="' + i + '">' + regexpExamples[i].name + '</option>';
+        html.gel("saved_regexp").innerHTML += '<option value="' + i + '">' + regexpExamples[i].name + '</option>';
     }
 }
 
@@ -202,8 +202,8 @@ function loadExampleList() {
  * @param {Number} i
  */
 function loadExample(i) {
-    setValue('regexp', regexpExamples[i].regexp);
-    gel('test').value = regexpExamples[i].tests[0];
+    html.setValue('regexp', regexpExamples[i].regexp);
+    html.gel('test').value = regexpExamples[i].tests[0];
     typeRegexp();
 }
 
@@ -211,7 +211,7 @@ function loadExample(i) {
  *
  */
 function delExample() {
-    regexpExamples.splice(gel('saved_regexp').selectedIndex, 1);
+    regexpExamples.splice(html.gel('saved_regexp').selectedIndex, 1);
     localStorage.setItem("examples", JSON.stringify(regexpExamples));
     loadExampleList();
 }
@@ -224,9 +224,9 @@ function saveExample() {
     if (name) {
         var exmpl = {
             "name": name,
-            "regexp": getValue('regexp'),
+            "regexp": html.getValue('regexp'),
             "tests": [
-                getValue('test')
+                html.getValue('test')
             ],
             "testsFails": []
         };
@@ -238,11 +238,11 @@ function saveExample() {
 
 function showAdvencedTests(isShown) {
     if (isShown) {
-        gel('simpleTests').style.display = 'none';
-        gel('advencedTests').style.display = 'block';
+        html.gel('simpleTests').style.display = 'none';
+        html.gel('advencedTests').style.display = 'block';
     } else {
-        gel('simpleTests').style.display = 'block';
-        gel('advencedTests').style.display = 'none';
+        html.gel('simpleTests').style.display = 'block';
+        html.gel('advencedTests').style.display = 'none';
     }
 }
 
@@ -255,14 +255,14 @@ function addTest(elem) {
         return;
     }
     var matches = prompt("Matches (JSON)");
-    gel(elem).add(new Option(str, matches));
+    html.gel(elem).add(new Option(str, matches));
 }
 
 /**
  * @param {String} elem
  */
 function delTest(elem) {
-    var e = gel(elem);
+    var e = html.gel(elem);
     e.remove(e.selectedIndex);
 }
 
@@ -271,7 +271,7 @@ function delTest(elem) {
  */
 function init() {
     initDragEvents();
-    selectedItem = gel('schema');
+    selectedItem = html.gel('schema');
     // localStorage.removeItem("examples");
     if (localStorage.getItem("examples")) {
         regexpExamples = JSON.parse(localStorage.getItem("examples"));
@@ -287,7 +287,7 @@ function init() {
 function refresh() {
     var structure = schemaToStructure();
     var regexp = structureToRegexp(structure);
-    setValue('regexp', regexp);
+    html.setValue('regexp', regexp);
     // buildRegexp();
     testRegexp();
 }
@@ -296,15 +296,15 @@ function refresh() {
  *
  */
 function typeRegexp() {
-    var regexp = getValue('regexp');
+    var regexp = html.getValue('regexp');
     var structure = regexpToStructure(regexp);
-    gel('structure').value = JSON.stringify(structure, null, 2);
+    html.gel('structure').value = JSON.stringify(structure, null, 2);
     if (!structure) {
-        gel('regexp').style.backgroundColor = 'pink';
-        gel('errMsg').innerHTML = 'There is an error in your regular expression.';
+        html.gel('regexp').style.backgroundColor = 'pink';
+        html.gel('errMsg').innerHTML = 'There is an error in your regular expression.';
     } else {
-        gel('regexp').style.backgroundColor = 'lightgreen';
-        gel('errMsg').innerHTML = '';
+        html.gel('regexp').style.backgroundColor = 'lightgreen';
+        html.gel('errMsg').innerHTML = '';
         structureToSchema(structure);
         testRegexp();
     }
@@ -314,8 +314,8 @@ function typeRegexp() {
  *
  */
 function generateCode() {
-    var regexp = getValue('regexp');
-    var test = getValue('test');
+    var regexp = html.getValue('regexp');
+    var test = html.getValue('test');
     var code = '';
     code += 'var myStr = "' + test.replace('"', '\\"') + '";\r\n';
     code += 'var matches = myStr.match(' + regexp + ');\r\n';
@@ -328,7 +328,7 @@ function generateCode() {
     code += '} else {\r\n';
     code += '    alert("The regexp does not matches.");\r\n';
     code += '}\r\n';
-    gel('code').innerHTML = code;
+    html.gel('code').innerHTML = code;
 }
 
 /**
@@ -336,20 +336,20 @@ function generateCode() {
  */
 function testRegexp() {
     try {
-        var theRegexp = eval(gel('regexp').value);
-        var res = gel('test').value.match(theRegexp);
+        var theRegexp = eval(html.gel('regexp').value);
+        var res = html.gel('test').value.match(theRegexp);
         if (res == null) {
-            gel('errMsg').innerHTML = 'Nothing matches in the string.';
-            gel('result').value = '';
+            html.gel('errMsg').innerHTML = 'Nothing matches in the string.';
+            html.gel('result').value = '';
         } else {
-            // gel('result').value = res.join('\n');
-            gel('result').value = JSON.stringify(res, null, 4);
-            gel('errMsg').innerHTML = '';
+            // html.gel('result').value = res.join('\n');
+            html.gel('result').value = JSON.stringify(res, null, 4);
+            html.gel('errMsg').innerHTML = '';
         }
-        gel('regexp').className = 'regexpOk';
+        html.gel('regexp').className = 'regexpOk';
     } catch (e) {
-        gel('errMsg').innerHTML = 'Some thing is wrong in the regexp. Error message: ' + e.message;
-        gel('regexp').className = 'regexpFailed';
+        html.gel('errMsg').innerHTML = 'Some thing is wrong in the regexp. Error message: ' + e.message;
+        html.gel('regexp').className = 'regexpFailed';
     }
     generateCode();
 }
@@ -479,14 +479,14 @@ function structureToRegexpQuantifier(v1, v2) {
  * @param {Object} structure
  */
 function structureToSchema(structure) {
-    gel('schema').innerHTML = "";
+    html.gel('schema').innerHTML = "";
     for ( var varName in structure) {
         if ((varName !== 'type') && (varName !== 'group')) {
-            setValue(varName, structure[varName]);
+            html.setValue(varName, structure[varName]);
         } else if (varName === 'group') {
             for (var i = 0; i < structure['group'].length; i++) {
                 var item = structure['group'][i];
-                gel('schema').appendChild(structureToSchemaRecurs(item));
+                html.gel('schema').appendChild(structureToSchemaRecurs(item));
             }
         }
     }
@@ -502,11 +502,11 @@ function structureToSchemaRecurs(item) {
     var n = getItemNum(itemNode);
     for ( var varName in item) {
         if ((varName !== 'type') && (varName !== 'group')) {
-            setValue(varName + '-' + n, item[varName], itemNode);
+            html.setValue(varName + '-' + n, item[varName], itemNode);
         } else if (varName === 'group') {
             for (var i = 0; i < item[varName].length; i++) {
                 var subItem = item[varName][i];
-                gel(varName + '-' + n, itemNode).appendChild(structureToSchemaRecurs(subItem));
+                html.gel(varName + '-' + n, itemNode).appendChild(structureToSchemaRecurs(subItem));
             }
         }
     }
@@ -524,13 +524,13 @@ function structureToSchemaRecurs(item) {
 function schemaToStructure() {
     var item = {};
     item.type = "literal";
-    item.atStart = getValue('atStart') ? true : false;
-    item.atEnd = getValue('atEnd') ? true : false;
-    item.global = getValue('global') ? true : false;
-    item.insensitive = getValue('insensitive') ? true : false;
-    item.multiline = getValue('multiline') ? true : false;
-    item.group = schemaToStructureRecurs(gel('schema'));
-    gel('structure').value = JSON.stringify(item, null, 2);
+    item.atStart = html.getValue('atStart') ? true : false;
+    item.atEnd = html.getValue('atEnd') ? true : false;
+    item.global = html.getValue('global') ? true : false;
+    item.insensitive = html.getValue('insensitive') ? true : false;
+    item.multiline = html.getValue('multiline') ? true : false;
+    item.group = schemaToStructureRecurs(html.gel('schema'));
+    html.gel('structure').value = JSON.stringify(item, null, 2);
     return item;
 }
 
@@ -546,39 +546,39 @@ function schemaToStructureRecurs(nodeRoot) {
         if ((node.nodeType == Node.ELEMENT_NODE) && ((node.className == 'item') || (node.className == 'itemClass'))) {
             var item = {};
             var n = getItemNum(node);
-            if (gel('type-' + n).value == "word") {
+            if (html.gel('type-' + n).value == "word") {
                 item.type = "word";
-                item.value = getValue('value-' + n);
-                item.min = getValue('min-' + n);
-                item.max = getValue('max-' + n);
-            } else if (gel('type-' + n).value == "class") {
+                item.value = html.getValue('value-' + n);
+                item.min = html.getValue('min-' + n);
+                item.max = html.getValue('max-' + n);
+            } else if (html.gel('type-' + n).value == "class") {
                 item.type = "class";
-                item.negative = getValue('negative-' + n) ? true : false;
-                item.group = schemaToStructureRecurs(gel('group-' + n));
-                item.min = getValue('min-' + n);
-                item.max = getValue('max-' + n);
-            } else if (gel('type-' + n).value == "alternative") {
+                item.negative = html.getValue('negative-' + n) ? true : false;
+                item.group = schemaToStructureRecurs(html.gel('group-' + n));
+                item.min = html.getValue('min-' + n);
+                item.max = html.getValue('max-' + n);
+            } else if (html.gel('type-' + n).value == "alternative") {
                 item.type = "alternative";
-            } else if (gel('type-' + n).value == "or") {
+            } else if (html.gel('type-' + n).value == "or") {
                 item.type = "or";
-                item.group = schemaToStructureRecurs(gel('group-' + n));
-                item.group2 = schemaToStructureRecurs(gel('group2-' + n));
-            } else if (gel('type-' + n).value == "group") {
+                item.group = schemaToStructureRecurs(html.gel('group-' + n));
+                item.group2 = schemaToStructureRecurs(html.gel('group2-' + n));
+            } else if (html.gel('type-' + n).value == "group") {
                 item.type = "group";
-                item.capture = getValue('capture-' + n);
-                item.group = schemaToStructureRecurs(gel('group-' + n));
-                item.min = getValue('min-' + n);
-                item.max = getValue('max-' + n);
-            } else if (gel('type-' + n).value == "char") {
+                item.capture = html.getValue('capture-' + n);
+                item.group = schemaToStructureRecurs(html.gel('group-' + n));
+                item.min = html.getValue('min-' + n);
+                item.max = html.getValue('max-' + n);
+            } else if (html.gel('type-' + n).value == "char") {
                 item.type = "char";
-                item.value = getValue('value-' + n);
-            } else if (gel('type-' + n).value == "predefinedClass") {
+                item.value = html.getValue('value-' + n);
+            } else if (html.gel('type-' + n).value == "predefinedClass") {
                 item.type = "predefinedClass";
-                item.value = getValue('value-' + n);
-            } else if (gel('type-' + n).value == "range") {
+                item.value = html.getValue('value-' + n);
+            } else if (html.gel('type-' + n).value == "range") {
                 item.type = "range";
-                item.first = getValue('first-' + n);
-                item.last = getValue('last-' + n);
+                item.first = html.getValue('first-' + n);
+                item.last = html.getValue('last-' + n);
             }
             itemTab.push(item);
         }
