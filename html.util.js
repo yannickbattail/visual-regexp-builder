@@ -1,17 +1,16 @@
-html = {};
+var html = {};
 
 html.entityMap = {
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
     '"': '&quot;',
-    "'": '&#39;',
-    "/": '&#x2F;'
+    "'": '&#39;'
 };
 
 html.escapeXml = function(string) {
-    return String(string).replace(/[&<>"'\/]/g, function(s) {
-        return entityMap[s];
+    return String(string).replace(/[&<>"']/g, function(s) {
+        return html.entityMap[s];
     });
 };
 
@@ -118,3 +117,5 @@ html.removeCssClass = function(htmlElem, className) {
         }
     }
 };
+
+module.exports = html;
