@@ -12,7 +12,8 @@
     "target": "es2015",
     "module": "esnext",
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "Node"
   },
   "lib": ["dom", "es2017"],
   /*"files": ["./model/*.ts"],*/
