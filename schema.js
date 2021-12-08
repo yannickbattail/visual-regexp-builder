@@ -208,7 +208,7 @@ function loadExample(i) {
 }
 
 /**
- * 
+ *
  */
 function delExample() {
     regexpExamples.splice(gel('saved_regexp').selectedIndex, 1);
@@ -217,7 +217,7 @@ function delExample() {
 }
 
 /**
- * 
+ *
  */
 function saveExample() {
     var name = prompt("A name for this regexp:");
@@ -267,9 +267,10 @@ function delTest(elem) {
 }
 
 /**
- * 
+ *
  */
 function init() {
+    initDragEvents();
     selectedItem = gel('schema');
     // localStorage.removeItem("examples");
     if (localStorage.getItem("examples")) {
@@ -281,7 +282,7 @@ function init() {
 }
 
 /**
- * 
+ *
  */
 function refresh() {
     var structure = schemaToStructure();
@@ -292,7 +293,7 @@ function refresh() {
 }
 
 /**
- * 
+ *
  */
 function typeRegexp() {
     var regexp = getValue('regexp');
@@ -310,7 +311,7 @@ function typeRegexp() {
 }
 
 /**
- * 
+ *
  */
 function generateCode() {
     var regexp = getValue('regexp');
@@ -331,7 +332,7 @@ function generateCode() {
 }
 
 /**
- * 
+ *
  */
 function testRegexp() {
     try {
@@ -492,7 +493,7 @@ function structureToSchema(structure) {
 }
 
 /**
- * 
+ *
  * @param {Object} item
  * @returns {Node} the new item htmlNode
  */
@@ -596,93 +597,95 @@ function drag(event) {
     event.dataTransfer.setData('text/plain', null);
 }
 
-/* events fired on the draggable target */
-document.addEventListener("drag", function(event) {
-    
-}, false);
+function initDragEvents() {
+  /* events fired on the draggable target */
+  document.addEventListener("drag", function(event) {
 
-document.addEventListener("dragstart", function(event) {
+  }, false);
+
+  document.addEventListener("dragstart", function(event) {
     // store a ref. on the dragged elem
     dragged = event.target;
     // make it half transparent
     event.target.style.opacity = .5;
-}, false);
+  }, false);
 
-document.addEventListener("dragend", function(event) {
+  document.addEventListener("dragend", function(event) {
     // reset the transparency
     event.target.style.opacity = "";
-}, false);
+  }, false);
 
-/* events fired on the drop targets */
-document.addEventListener("dragover", function(event) {
+  /* events fired on the drop targets */
+  document.addEventListener("dragover", function(event) {
     // prevent default to allow drop
     event.preventDefault();
-}, false);
+  }, false);
 
-document.addEventListener("dragenter", function(event) {
+  document.addEventListener("dragenter", function(event) {
     // highlight potential drop target when the draggable element enters it
     var source = dragged.parentNode;
     var dest = event.target;
     var elem = dragged;
-    
+
     // move dragged elem to the selected drop target
     if (isValidMove(source, dest, elem)) {
-        if (dest.style) {
-            if (dest.id == 'recycledBin') {
-                dest.className = "group recycledBinFull";
-            } else {
-                dest.style.background = "chartreuse";
-            }
+      if (dest.style) {
+        if (dest.id == 'recycledBin') {
+          dest.className = "group recycledBinFull";
+        } else {
+          dest.style.background = "chartreuse";
         }
+      }
     } else {
-        if (dest.style) {
-            if (dest.id == 'recycledBin') {
-                dest.className = "group";
-            } else {
-                dest.style.background = "red";
-            }
+      if (dest.style) {
+        if (dest.id == 'recycledBin') {
+          dest.className = "group";
+        } else {
+          dest.style.background = "red";
         }
+      }
     }
-}, false);
+  }, false);
 
-document.addEventListener("dragleave", function(event) {
+  document.addEventListener("dragleave", function(event) {
     // reset background of potential drop target when the draggable element
     // leaves it
     // var source = dragged.parentNode;
     var dest = event.target;
     // var elem = dragged;
     if (dest.style) {
-        if (dest.id == 'recycledBin') {
-            dest.className = "group";
-        } else {
-            dest.style.background = "";
-        }
+      if (dest.id == 'recycledBin') {
+        dest.className = "group";
+      } else {
+        dest.style.background = "";
+      }
     }
-    
-}, false);
 
-document.addEventListener("drop", function(event) {
+  }, false);
+
+  document.addEventListener("drop", function(event) {
     // prevent default action (open as link for some elements)
     event.preventDefault();
     var source = dragged.parentNode;
     var dest = event.target;
     var elem = dragged;
     if (dest.style) {
-        if (dest.id == 'recycledBin') {
-            dest.className = "group";
-        } else {
-            dest.style.background = "";
-        }
+      if (dest.id == 'recycledBin') {
+        dest.className = "group";
+      } else {
+        dest.style.background = "";
+      }
     }
     // move dragged elem to the selected drop target
     if (isValidMove(source, dest, elem)) {
-        doMove(source, dest, elem);
+      doMove(source, dest, elem);
     }
-    
-}, false);
+
+  }, false);
+}
 
 /**
- * 
+ *
  * @param {Node} source
  * @param {Node} dest
  * @param {Node} elem

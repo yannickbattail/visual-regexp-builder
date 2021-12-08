@@ -6,14 +6,19 @@
   "scripts": {
     "apg": "node_modules/apg-js/bin/apg.sh",
     "generate_parser": "node_modules/apg-js/bin/apg.sh --in=./resources/regexp.abnf --out=parser.js",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
     "@types/jest": "^27.0.3",
     "@types/node": "^16.11.12",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
     "@typescript-eslint/parser": "^5.6.0",
     "apg-js": "^4.1.1",
+    "babel-jest": "^27.4.2",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.4.3",

@@ -1,11 +1,20 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "baseUrl": ".",
+    "rootDir": ".",
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
-  "lib": ["dom", "es6"],
-  "files": ["./model/*.ts"]
+  "lib": ["dom", "es2017"],
+  /*"files": ["./model/*.ts"],*/
+  "exclude": ["node_modules", "tmp"]
 }
